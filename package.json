@@ -1,0 +1,31 @@
+{
+  "name": "el-tutor",
+  "version": "1.0.0",
+  "description": "Online web app that allows teachers and students to keep track of student's grades. Built with MEAN Stack",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/georgesimos/el-tutor.git"
+  },
+  "keywords": [],
+  "author": "George Simos",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/georgesimos/el-tutor/issues"
+  },
+  "homepage": "https://github.com/georgesimos/el-tutor#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "morgan": "^1.9.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
+}
