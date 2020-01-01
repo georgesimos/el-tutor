@@ -1,9 +1,10 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
+
 const { Schema } = mongoose;
 
 const teacherSchema = Schema({
-  lesson: { type: Schema.Types.ObjectId, ref: "Lesson" }
+  lesson: { type: Schema.Types.ObjectId, ref: 'Lesson' },
 });
 
-const Teacher = mongoose.model("Teacher", teacherSchema);
+const Teacher = mongoose.model('Teacher', teacherSchema);
 module.exports = Teacher;
