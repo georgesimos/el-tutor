@@ -7,33 +7,44 @@
  *
  */
 
-const express = require('express')
-const logger = require('morgan');
+const express = require("express");
+const logger = require("morgan");
+const dotenv = require("dotenv");
+const expressStatusMonitor = require("express-status-monitor");
 
 /* Make all variables from our .env file available in our process */
-if (process.env.NODE_ENV !== 'production' ) { 
-    require('dotenv').config({ path: '.env.example' }) 
-  }
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config({ path: ".env.example" });
+}
 
 /* Init express server */
 const app = express();
 
-/* Here we setup the middlewares & configs */
+/**
+ * Connect to MongoDB.
+ */
+require("./config/mongoose");
 
-app.use(logger('dev'));
+/* Middlewares & configs setup */
+app.use(logger("dev"));
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 
-app.disable('x-powered-by');
+app.disable("x-powered-by");
+app.use(expressStatusMonitor());
 app.use((req, res, next) => {
   res.locals.user = req.user;
   next();
 });
 
+/* Here we define the api routes */
+app.use(require("./routes/users"));
 
 const port = process.env.PORT || 8080;
-const address = process.env.SERVER_ADDRESS || 'localhost'
+const address = process.env.SERVER_ADDRESS || "localhost";
 
-app.get('/', (req, res) => res.send('Hello World!'))
+app.get("/", (req, res) => res.send("Hello World!"));
 
-app.listen(port, () => console.log(`Server running on http://${address}:${port}`))
+app.listen(port, () =>
+  console.log(`Server running on http://${address}:${port}`)
+);
