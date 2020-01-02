@@ -1,10 +1,27 @@
 const router = require('express').Router();
 const User = require('../models/User');
+const Student = require('../models/Student');
+const Teacher = require('../models/Teacher');
 const auth = require('../config/auth');
 
 /* Create a user */
 router.post('/users', async (req, res) => {
+  let student;
+  let teacher;
+  const { role } = req.body;
   const user = new User(req.body);
+
+  if (role === 'student') {
+    student = new Student();
+    user._student = student._id;
+    await student.save();
+  }
+  if (role === 'teacher') {
+    teacher = new Teacher();
+    user._teacher = teacher._id;
+    await teacher.save();
+  }
+
   try {
     await user.save();
     const token = await user.generateAuthToken();
