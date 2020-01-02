@@ -45,4 +45,6 @@ const address = process.env.SERVER_ADDRESS || 'localhost';
 
 app.get('/', (req, res) => res.send('Hello World!'));
 
-app.listen(port, () => console.log(`Server running on http://${address}:${port}`));
+const server = app.listen(port, () => console.log(`Server running on http://${address}:${port}`));
+
+module.exports = server;

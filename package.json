@@ -2,10 +2,10 @@
   "name": "el-tutor",
   "version": "1.0.0",
   "description": "Online web app that allows teachers and students to keep track of student's grades. Built with MEAN Stack",
-  "main": "index.js",
+  "main": "server/index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon start",
+    "start": "node server",
+    "dev": "nodemon server",
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier-eslint \"**/*.{js,json}\" --write",
     "lint": "eslint \"**/*.js\""
