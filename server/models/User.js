@@ -6,19 +6,13 @@ const { Schema } = mongoose;
 
 const userSchema = Schema(
   {
-    email: { type: String, unique: true },
-    password: String,
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    name: { type: String, required: true },
     role: {
       type: String,
-      default: 'admin',
+      default: 'superadmin',
       enum: ['student', 'teacher', 'superadmin'],
-    },
-    profile: {
-      name: String,
-      gender: String,
-      location: String,
-      website: String,
-      picture: String,
     },
     _student: { type: Schema.Types.ObjectId, ref: 'Student' },
     _teacher: { type: Schema.Types.ObjectId, ref: 'Teacher' },
