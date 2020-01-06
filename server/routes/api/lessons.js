@@ -5,7 +5,8 @@ const Lesson = require('../../models/Lesson');
 /* Create a Lesson */
 router.post('/', auth, async (req, res) => {
   const { title, description } = req.body;
-  const lesson = new Lesson({ title, description });
+  const creator = req.user.id;
+  const lesson = new Lesson({ title, description, creator });
   try {
     await lesson.save();
     res.status(201).send({ lesson });
