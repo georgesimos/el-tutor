@@ -39,6 +39,8 @@ app.use((req, res, next) => {
 /* Here we define the api routes */
 app.use('/api/users', require('./routes/api/users'));
 app.use('/api/lessons', require('./routes/api/lessons'));
+app.use('/api/teachers', require('./routes/api/teachers'));
+app.use('/api/students', require('./routes/api/students'));
 
 const port = process.env.PORT || 8080;
 const address = process.env.SERVER_ADDRESS || 'localhost';
