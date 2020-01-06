@@ -3,10 +3,10 @@ const User = require('../../models/User');
 const Student = require('../../models/Student');
 const Teacher = require('../../models/Teacher');
 const auth = require('../../config/auth');
-const isSuperadmin = require('../../config/isSuperadmin');
+const haveAdmin = require('../../utils/haveAdmin');
 
 /* Create a user */
-router.post('/', isSuperadmin, async (req, res) => {
+router.post('/', haveAdmin, async (req, res) => {
   let student;
   let teacher;
   const { role } = req.body;

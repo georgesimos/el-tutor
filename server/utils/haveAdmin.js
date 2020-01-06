@@ -1,9 +1,9 @@
 /**
- * isSuperadmin middleware
+ * haveAdmin middleware
  */
 const User = require('../models/User');
 
-const isSuperadmin = async (req, res, next) => {
+const haveAdmin = async (req, res, next) => {
   try {
     const superadmin = await User.findOne({
       role: 'superadmin',
@@ -15,4 +15,4 @@ const isSuperadmin = async (req, res, next) => {
   }
 };
 
-module.exports = isSuperadmin;
+module.exports = haveAdmin;
