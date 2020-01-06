@@ -12,18 +12,16 @@ const dotenv = require('dotenv');
 const expressStatusMonitor = require('express-status-monitor');
 const connectDB = require('./config/db');
 
-/* Make all variables from our .env file available in our process */
+// Make all variables from our .env file available in our process
 dotenv.config({ path: '.env.example' });
 
-/* Init express server */
+// Init express server
 const app = express();
 
-/**
- * Connect to MongoDB.
- */
+// Connect to MongoDB
 connectDB();
 
-/* Middlewares & configs setup */
+// Middlewares & configs setup
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -35,7 +33,7 @@ app.use((req, res, next) => {
   next();
 });
 
-/* api routes */
+// api routes
 app.use(require('./routes'));
 
 const port = process.env.PORT || 8080;
