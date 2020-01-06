@@ -5,7 +5,8 @@ const { Schema } = mongoose;
 const lessonSchema = Schema({
   title: { type: String, required: true },
   description: String,
-  creator: { type: Schema.Types.ObjectId, ref: 'User' },
+  _teacher: { type: Schema.Types.ObjectId, ref: 'Teacher' },
+  _students: [{ type: Schema.Types.ObjectId, ref: 'Student' }],
 });
 
 const Lesson = mongoose.model('Lesson', lessonSchema);

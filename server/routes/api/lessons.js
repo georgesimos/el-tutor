@@ -4,21 +4,26 @@ const Lesson = require('../../models/Lesson');
 
 /* Create a Lesson */
 router.post('/', auth, async (req, res) => {
-  const { title, description } = req.body;
-  const creator = req.user.id;
-  const lesson = new Lesson({ title, description, creator });
+  if (req.user.role !== 'superadmin')
+    return res.status(401).send({ message: 'Only Admin can create a lesson' });
+  const { title, description, _teacher, _students } = req.body;
+  const lesson = new Lesson({ title, description, _teacher });
+  lesson._students = [...lesson._students, ..._students];
   try {
     await lesson.save();
-    res.status(201).send({ lesson });
+    return res.status(201).send({ lesson });
   } catch (e) {
-    res.status(400).send(e);
+    return res.status(400).send(e);
   }
 });
 
 /* Get all lessons */
 router.get('/', auth, async (req, res) => {
   try {
-    const lessons = await Lesson.find({});
+    const lessons = await Lesson.find({})
+      .populate({ path: '_teacher', populate: { path: '_user', select: ['name', 'email'] } })
+      .populate({ path: '_students', populate: { path: '_user', select: ['name', 'email'] } });
+
     res.send(lessons);
   } catch (e) {
     res.status(400).send(e);
@@ -29,7 +34,10 @@ router.get('/', auth, async (req, res) => {
 router.get('/:id', auth, async (req, res) => {
   try {
     const { id } = req.params;
-    const lessons = await Lesson.findById(id);
+    const lessons = await Lesson.findById(id)
+      .populate({ path: '_teacher', populate: { path: '_user', select: ['name', 'email'] } })
+      .populate({ path: '_students', populate: { path: '_user', select: ['name', 'email'] } });
+
     return !lessons ? res.sendStatus(404) : res.send(lessons);
   } catch (e) {
     return res.sendStatus(400);
