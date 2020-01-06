@@ -1,15 +1,44 @@
 const router = require('express').Router();
 const auth = require('../../config/auth');
 const Lesson = require('../../models/Lesson');
+const Teacher = require('../../models/Teacher');
+const Student = require('../../models/Student');
 
 /* Create a Lesson */
 router.post('/', auth, async (req, res) => {
   if (req.user.role !== 'superadmin')
-    return res.status(401).send({ message: 'Only Admin can create a lesson' });
+    return res.status(401).send({
+      message: 'Only Admin can create a lesson',
+    });
   const { title, description, _teacher, _students } = req.body;
-  const lesson = new Lesson({ title, description, _teacher });
+  const lesson = new Lesson({
+    title,
+    description,
+    _teacher,
+  });
   lesson._students = [...lesson._students, ..._students];
+
   try {
+    // Find teacher and save the lesson
+    const teacher = await Teacher.findById(_teacher);
+    if (!teacher) return res.status(404).send({ message: 'Teacher not found' });
+    if (teacher.lesson)
+      return res.status(404).send({
+        message: 'Teacher have already a lesson',
+      });
+    teacher.lesson = lesson._id;
+    await teacher.save();
+    // For each student...
+    // eslint-disable-next-line consistent-return
+    _students.forEach(async id => {
+      const student = await Student.findById(id);
+      if (!student) return res.status(404).send({ message: 'Student not found' });
+      // throw new ErrorResponse('Teacher not found', 401);
+      if (!student.lessons.includes(lesson._id)) {
+        student.lessons.push(lesson._id);
+        await student.save();
+      }
+    });
     await lesson.save();
     return res.status(201).send({ lesson });
   } catch (e) {

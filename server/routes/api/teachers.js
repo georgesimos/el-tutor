@@ -12,4 +12,6 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
+/* POST add lesson */
+
 module.exports = router;
