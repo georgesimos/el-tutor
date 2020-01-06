@@ -1,9 +1,8 @@
 /**
  *
- * Author:  George Simos - georgesimos.com
- *
- * License: Copyright (c) 2019 George Simos
- * @link https://github.com/georgesimos/el-tutor
+ * @author    George Simos - georgesimos.com
+ * @copyright George Simos 2019
+ * @link      https://github.com/georgesimos/el-tutor
  *
  */
 
