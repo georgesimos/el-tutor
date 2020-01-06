@@ -3,13 +3,13 @@ const mongoose = require('mongoose');
 const faker = require('faker');
 const chalk = require('chalk');
 const dotenv = require('dotenv');
-const User = require('./models/User');
-const Teacher = require('./models/Teacher');
-const Student = require('./models/Student');
-const Lesson = require('./models/Lesson');
+const User = require('./server/models/User');
+const Teacher = require('./server/models/Teacher');
+const Student = require('./server/models/Student');
+const Lesson = require('./server/models/Lesson');
 
 // Make all variables from our .env file available in our process
-dotenv.config({ path: '../.env.example' });
+dotenv.config({ path: '.env.example' });
 // connect db
 
 const connectDB = async cb => {

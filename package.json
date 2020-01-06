@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node server",
     "dev": "nodemon server",
+    "seed-database": "node seed.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier-eslint \"**/*.{js,json}\" --write",
     "lint": "eslint \"**/*.js\""
