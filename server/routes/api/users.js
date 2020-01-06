@@ -23,7 +23,6 @@ router.post('/', haveAdmin, async (req, res) => {
     await teacher.save();
   }
 
-  console.log(teacher);
   try {
     await user.save();
     const token = await user.generateAuthToken();

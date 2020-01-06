@@ -6,7 +6,7 @@ const Student = require('../../models/Student');
 
 /* Create a Lesson */
 router.post('/', auth, async (req, res) => {
-  if (req.user.role !== 'superadmin')
+  if (req.user.role !== 'admin')
     return res.status(401).send({
       message: 'Only Admin can create a lesson',
     });

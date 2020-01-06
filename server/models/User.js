@@ -11,8 +11,8 @@ const userSchema = Schema(
     name: { type: String, required: true },
     role: {
       type: String,
-      default: 'superadmin',
-      enum: ['student', 'teacher', 'superadmin'],
+      default: 'student',
+      enum: ['student', 'teacher', 'admin'],
     },
     _student: { type: Schema.Types.ObjectId, ref: 'Student' },
     _teacher: { type: Schema.Types.ObjectId, ref: 'Teacher' },
