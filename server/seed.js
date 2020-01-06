@@ -1,3 +1,4 @@
+/* eslint-disable node/no-unsupported-features/es-syntax */
 const mongoose = require('mongoose');
 const faker = require('faker');
 const chalk = require('chalk');
@@ -85,8 +86,9 @@ const saveAdmin = async () => {
 const saveTeachers = async teachers => {
   console.log(chalk.green('Saving'), 'teachers');
   teachers.forEach(async teacher => {
-    const newUser = await new User(teacher);
-    const newTeacher = await new Teacher({ _user: newUser._id });
+    const { _id, ...rest } = teacher;
+    const newUser = await new User(rest);
+    const newTeacher = await new Teacher({ _id, _user: newUser._id });
     await newUser.save();
     await newTeacher.save();
   });
@@ -94,8 +96,9 @@ const saveTeachers = async teachers => {
 const saveStudents = async students => {
   console.log(chalk.green('Saving'), 'student');
   students.forEach(async student => {
-    const newUser = await new User(student);
-    const newStudent = await new Student({ _user: newUser._id });
+    const { _id, ...rest } = student;
+    const newUser = await new User(rest);
+    const newStudent = await new Student({ _id, _user: newUser._id });
     await newUser.save();
     await newStudent.save();
   });
