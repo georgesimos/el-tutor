@@ -14,9 +14,7 @@ const expressStatusMonitor = require('express-status-monitor');
 const connectDB = require('./config/db');
 
 /* Make all variables from our .env file available in our process */
-if (process.env.NODE_ENV !== 'production') {
-  dotenv.config({ path: '.env.example' });
-}
+dotenv.config({ path: '.env.example' });
 
 /* Init express server */
 const app = express();

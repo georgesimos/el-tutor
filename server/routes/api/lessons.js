@@ -3,7 +3,7 @@ const auth = require('../../config/auth');
 const Lesson = require('../../models/Lesson');
 
 /* Create a Lesson */
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
   const { title, description } = req.body;
   const lesson = new Lesson({ title, description });
   try {
@@ -21,6 +21,17 @@ router.get('/', auth, async (req, res) => {
     res.send(lessons);
   } catch (e) {
     res.status(400).send(e);
+  }
+});
+
+/* Get lesson by id */
+router.get('/:id', auth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const lessons = await Lesson.findById(id);
+    return !lessons ? res.sendStatus(404) : res.send(lessons);
+  } catch (e) {
+    return res.sendStatus(400);
   }
 });
 
