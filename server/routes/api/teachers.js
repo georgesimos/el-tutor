@@ -5,7 +5,7 @@ const Teacher = require('../../models/Teacher');
 /* Get all teachers */
 router.get('/', auth, async (req, res) => {
   try {
-    const teachers = await Teacher.find({});
+    const teachers = await Teacher.find({}).populate('_user', ['name', 'email']);
     res.send(teachers);
   } catch (e) {
     res.status(400).send(e);

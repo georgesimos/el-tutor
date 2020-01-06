@@ -12,16 +12,17 @@ router.post('/', async (req, res) => {
   const user = new User(req.body);
 
   if (role === 'student') {
-    student = new Student();
+    student = new Student({ _user: user._id });
     user._student = student._id;
     await student.save();
   }
   if (role === 'teacher') {
-    teacher = new Teacher();
+    teacher = new Teacher({ _user: user._id });
     user._teacher = teacher._id;
     await teacher.save();
   }
 
+  console.log(teacher);
   try {
     await user.save();
     const token = await user.generateAuthToken();
