@@ -1,9 +1,9 @@
 const router = require('express').Router();
-const auth = require('../config/auth');
-const Lesson = require('../models/Lesson');
+const auth = require('../../config/auth');
+const Lesson = require('../../models/Lesson');
 
 /* Create a Lesson */
-router.post('/lessons', async (req, res) => {
+router.post('/', async (req, res) => {
   const { title, description } = req.body;
   const lesson = new Lesson({ title, description });
   try {
@@ -15,7 +15,7 @@ router.post('/lessons', async (req, res) => {
 });
 
 /* Get all lessons */
-router.get('/lessons', auth, async (req, res) => {
+router.get('/', auth, async (req, res) => {
   try {
     const lessons = await Lesson.find({});
     res.send(lessons);
@@ -25,7 +25,7 @@ router.get('/lessons', auth, async (req, res) => {
 });
 
 /* Update lesson by id */
-router.patch('/lessons/:id', auth, async (req, res) => {
+router.patch('/:id', auth, async (req, res) => {
   const validationErrors = [];
   const updates = Object.keys(req.body);
   const allowedUpdates = ['title', 'description'];
@@ -53,7 +53,7 @@ router.patch('/lessons/:id', auth, async (req, res) => {
 });
 
 /* Delete lesson by id */
-router.delete('/lessons/:id', auth, async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
   const _id = req.params.id;
   try {
     const lesson = await Lesson.findByIdAndDelete(_id);

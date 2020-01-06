@@ -1,11 +1,11 @@
 const router = require('express').Router();
-const User = require('../models/User');
-const Student = require('../models/Student');
-const Teacher = require('../models/Teacher');
-const auth = require('../config/auth');
+const User = require('../../models/User');
+const Student = require('../../models/Student');
+const Teacher = require('../../models/Teacher');
+const auth = require('../../config/auth');
 
 /* Create a user */
-router.post('/users', async (req, res) => {
+router.post('/', async (req, res) => {
   let student;
   let teacher;
   const { role } = req.body;
@@ -32,7 +32,7 @@ router.post('/users', async (req, res) => {
 });
 
 /* Get all users */
-router.get('/users', auth, async (req, res) => {
+router.get('/', auth, async (req, res) => {
   try {
     const users = await User.find({});
     res.send(users);
@@ -42,7 +42,7 @@ router.get('/users', auth, async (req, res) => {
 });
 
 /* Get logged in user details */
-router.get('/users/me', auth, async (req, res) => {
+router.get('/me', auth, async (req, res) => {
   try {
     res.send(req.user);
   } catch (e) {
@@ -51,7 +51,7 @@ router.get('/users/me', auth, async (req, res) => {
 });
 
 /* Get user by id */
-router.get('/users/:id', auth, async (req, res) => {
+router.get('/:id', auth, async (req, res) => {
   try {
     const { id } = req.params;
     const user = await User.findById(id);
@@ -62,7 +62,7 @@ router.get('/users/:id', auth, async (req, res) => {
 });
 
 /* Update logged in user */
-router.patch('/users/me', auth, async (req, res) => {
+router.patch('/me', auth, async (req, res) => {
   const validationErrors = [];
   const updates = Object.keys(req.body);
   const profileUpdates = ['name', 'gender', 'location', 'website'];
@@ -91,7 +91,7 @@ router.patch('/users/me', auth, async (req, res) => {
 });
 
 /* Update user by id */
-router.patch('/users/:id', auth, async (req, res) => {
+router.patch('/:id', auth, async (req, res) => {
   const validationErrors = [];
   const updates = Object.keys(req.body);
   const profileUpdates = ['name', 'gender', 'location', 'website'];
@@ -122,7 +122,7 @@ router.patch('/users/:id', auth, async (req, res) => {
 });
 
 /* Delete logged in user */
-router.delete('/users/me', auth, async (req, res) => {
+router.delete('/me', auth, async (req, res) => {
   try {
     await req.user.remove();
     res.send({ message: 'User Deleted' });
@@ -132,7 +132,7 @@ router.delete('/users/me', auth, async (req, res) => {
 });
 
 /* Delete user by id */
-router.delete('/users/:id', auth, async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
   const _id = req.params.id;
   try {
     const user = await User.findByIdAndDelete(_id);
@@ -145,7 +145,7 @@ router.delete('/users/:id', auth, async (req, res) => {
 });
 
 /* Login User */
-router.post('/users/login', async (req, res) => {
+router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findByCredentials(email, password);
@@ -159,7 +159,7 @@ router.post('/users/login', async (req, res) => {
 });
 
 /* Logout user */
-router.post('/users/logout', auth, async (req, res) => {
+router.post('/logout', auth, async (req, res) => {
   const { user } = req;
   try {
     user.tokens = user.tokens.filter(token => {
@@ -173,7 +173,7 @@ router.post('/users/logout', auth, async (req, res) => {
 });
 
 /* Logout user from all devices */
-router.post('/users/logoutAll', auth, async (req, res) => {
+router.post('/logoutAll', auth, async (req, res) => {
   try {
     req.user.tokens = [];
     await req.user.save();

@@ -1,9 +1,9 @@
 const router = require('express').Router();
-const auth = require('../config/auth');
-const Teacher = require('../models/Teacher');
+const auth = require('../../config/auth');
+const Teacher = require('../../models/Teacher');
 
 /* Get all teachers */
-router.get('/teachers', auth, async (req, res) => {
+router.get('/', auth, async (req, res) => {
   try {
     const teachers = await Teacher.find({});
     res.send(teachers);
