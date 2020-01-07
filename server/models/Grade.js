@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const gradeSchema = Schema({
-  grade: Number,
+  grade: { type: Number, required: true },
   _lesson: { type: Schema.Types.ObjectId, ref: 'Lesson' },
   _student: { type: Schema.Types.ObjectId, ref: 'Student' }
 });
