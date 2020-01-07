@@ -7,6 +7,7 @@ const User = require('./server/models/User');
 const Teacher = require('./server/models/Teacher');
 const Student = require('./server/models/Student');
 const Lesson = require('./server/models/Lesson');
+const Grade = require('./server/models/Grade');
 
 // Make all variables from our .env file available in our process
 dotenv.config({ path: '.env.example' });
@@ -46,7 +47,7 @@ const createUsers = role => {
       name: `${firstName} ${lastName}`,
       email,
       password: 'password123',
-      role,
+      role
     };
     users.push(newUser);
   }
@@ -60,18 +61,35 @@ const createLessons = (teachers, students) => {
     const title = faker.name.title();
     const description = faker.lorem.paragraph();
     const newLesson = {
+      _id: new mongoose.Types.ObjectId(),
       title,
       description,
       _teacher: teacher._id,
       _students: [
         students[Math.floor(Math.random() * 50)]._id,
-        students[Math.floor(Math.random() * 50)]._id,
-      ],
+        students[Math.floor(Math.random() * 50)]._id
+      ]
     };
     lessons.push(newLesson);
   });
 
   return lessons;
+};
+
+const createGrades = lessons => {
+  console.log(chalk.green('Creating'), 'Grades');
+  const grades = [];
+  lessons.forEach(lesson => {
+    const { _students } = lesson;
+    const newGrade = {
+      grade: Math.floor(Math.random() * 11),
+      _lesson: lesson._id,
+      _student: _students[Math.floor(Math.random() * _students.length)]._id
+    };
+    grades.push(newGrade);
+  });
+
+  return grades;
 };
 const saveAdmin = async () => {
   console.log(chalk.green('Saving'), 'Admin');
@@ -79,7 +97,7 @@ const saveAdmin = async () => {
     name: 'super admin',
     email: 'admin@admin.com',
     password: 'password123',
-    role: 'admin',
+    role: 'admin'
   });
   await admin.save();
 };
@@ -111,16 +129,24 @@ const saveLessons = async lessons => {
     await newLesson.save();
   });
 };
-
+const saveGrades = async grades => {
+  console.log(chalk.green('Saving'), 'Grades');
+  grades.forEach(async grade => {
+    const newGrade = await new Grade(grade);
+    await newGrade.save();
+  });
+};
 const seed = () => {
   console.log(chalk.green('seed'), 'just started');
   saveAdmin();
   const teachers = createUsers('teacher');
   const students = createUsers('student');
   const lessons = createLessons(teachers, students);
+  const grades = createGrades(lessons, students);
   saveTeachers(teachers);
   saveStudents(students);
   saveLessons(lessons);
+  saveGrades(grades);
   console.log(chalk.green('seed'), 'just ended');
 };
 connectDB(seed);
