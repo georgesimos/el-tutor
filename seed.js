@@ -158,14 +158,16 @@ const saveGrades = async grades => {
     }
   });
 };
+
 const seed = () => {
   console.log(chalk.green('seed'), 'just started');
-  saveAdmin();
+
   const teachers = createUsers('teacher');
   const students = createUsers('student');
   const lessons = createLessons(teachers, students);
   const grades = createGrades(lessons, students);
 
+  setTimeout(() => saveAdmin(), 2000);
   setTimeout(() => saveTeachers(teachers), 2000);
   setTimeout(() => saveStudents(students), 2000);
   setTimeout(() => saveLessons(lessons), 2000);
@@ -176,4 +178,5 @@ const seed = () => {
     process.exit();
   }, 30000);
 };
+
 connectDB(seed);
