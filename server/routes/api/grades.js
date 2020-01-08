@@ -5,7 +5,16 @@ const Grade = require('../../models/Grade');
 /* Get all grades */
 router.get('/', auth, async (req, res) => {
   try {
-    const grades = await Grade.find({});
+    const grades = await Grade.find({})
+      .populate({
+        path: '_student',
+        populate: { path: '_user', select: ['name', 'email'] }
+      })
+      .populate({
+        path: '_lesson',
+        select: ['title', 'description', '_teacher'],
+        populate: { path: '_teacher', populate: { path: '_user', select: ['name', 'email'] } }
+      });
     res.send(grades);
   } catch (e) {
     res.status(400).send(e);
