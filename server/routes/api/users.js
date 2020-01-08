@@ -154,7 +154,7 @@ router.post('/login', async (req, res) => {
     res.send({ user, token });
   } catch (e) {
     res.status(400).send({
-      error: { message: 'You have entered an invalid email or password' },
+      error: { message: 'You have entered an invalid email or password' }
     });
   }
 });
