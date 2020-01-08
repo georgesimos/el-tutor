@@ -8,13 +8,13 @@ const Student = require('../../models/Student');
 router.post('/', auth, async (req, res) => {
   if (req.user.role !== 'admin')
     return res.status(401).send({
-      message: 'Only Admin can create a lesson',
+      message: 'Only Admin can create a lesson'
     });
   const { title, description, _teacher, _students } = req.body;
   const lesson = new Lesson({
     title,
     description,
-    _teacher,
+    _teacher
   });
   lesson._students = [...lesson._students, ..._students];
 
@@ -24,7 +24,7 @@ router.post('/', auth, async (req, res) => {
     if (!teacher) return res.status(404).send({ message: 'Teacher not found' });
     if (teacher.lesson)
       return res.status(404).send({
-        message: 'Teacher have already a lesson',
+        message: 'Teacher have already a lesson'
       });
     teacher.lesson = lesson._id;
     await teacher.save();
