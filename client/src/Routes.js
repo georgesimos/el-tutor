@@ -10,8 +10,8 @@ import { AdminLayout, PublicLayout } from './layouts';
 const Account = lazy(() => import('./pages/Admin/Account'));
 
 // Register - Login
-const Register = lazy(() => import('./pages/Public/Register'));
-const Login = lazy(() => import('./pages/Public/Login'));
+const Register = lazy(() => import('./pages/Public/Register/Register'));
+const Login = lazy(() => import('./pages/Public/Login/Login'));
 
 // Public
 
@@ -20,7 +20,8 @@ const Routes = () => {
     <Suspense fallback={<Loading />}>
       <Router>
         <Switch>
-          <Route exact path="/login/" component={Login} />
+          <Route exact path="/" component={Login} />
+          <Route exact path="/login" component={Login} />
           <Route exact path="/register" component={Register} />
           {/* <ProtectedRoute exact path="/admin/account" layout={AdminLayout} component={Account} /> */}
           <WithLayoutRoute exact path="/admin/account" layout={AdminLayout} component={Account} />
