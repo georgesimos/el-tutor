@@ -1,5 +1,5 @@
 const isAdmin = (req, res, next) => {
-  if (req.user.role !== 'admin') return res.status(401).send({ error: 'Only for admin.' });
+  if (req.user.role !== 'admin') return res.status(401).send({ error: 'forbidden' });
   return next();
 };
 
