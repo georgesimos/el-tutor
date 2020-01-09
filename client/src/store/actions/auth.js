@@ -5,7 +5,7 @@ import {
   AUTH_ERROR,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
-  LOGOUT,
+  LOGOUT
 } from '../types';
 import { setAlert } from './alert';
 import { setAuthHeaders, setUser, removeUser, isLoggedIn } from '../../utils';
@@ -13,11 +13,11 @@ import { setAuthHeaders, setUser, removeUser, isLoggedIn } from '../../utils';
 // Login user
 export const login = (email, password) => async dispatch => {
   try {
-    const url = '/users/login';
+    const url = 'api/users/login';
     const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password })
     });
     const responseData = await response.json();
     if (response.ok) {
@@ -37,21 +37,14 @@ export const login = (email, password) => async dispatch => {
 };
 
 // Register user
-export const register = ({ name, email, phone, role, password }) => async dispatch => {
+export const register = ({ name, email, role, password }) => async dispatch => {
   try {
-    const url = '/users';
-    const body = {
-      email,
-      password,
-      role,
-      profile: {
-        name,
-      },
-    };
+    const url = '/api/users';
+    const body = { name, email, password, role };
     const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
+      body: JSON.stringify(body)
     });
     const responseData = await response.json();
     if (response.ok) {
@@ -72,12 +65,11 @@ export const register = ({ name, email, phone, role, password }) => async dispat
 
 // Load user
 export const loadUser = () => async dispatch => {
-  if (!isLoggedIn()) return;
   try {
-    const url = '/users/me';
+    const url = '/api/users/me';
     const response = await fetch(url, {
       method: 'GET',
-      headers: setAuthHeaders(),
+      headers: setAuthHeaders()
     });
     const responseData = await response.json();
     if (response.ok) {
@@ -95,13 +87,13 @@ export const loadUser = () => async dispatch => {
 export const logout = () => async dispatch => {
   try {
     const token = localStorage.getItem('jwtToken');
-    const url = '/users/logout';
+    const url = '/api/users/logout';
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json'
+      }
     });
     const responseData = await response.json();
     if (response.ok) {
