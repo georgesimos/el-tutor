@@ -4,9 +4,10 @@
 const User = require('../models/User');
 
 const haveAdmin = async (req, res, next) => {
+  if (req.body.role !== 'admin') return next();
   try {
     const superadmin = await User.findOne({
-      role: 'admin',
+      role: 'admin'
     });
     if (!superadmin) return next();
     throw new Error();

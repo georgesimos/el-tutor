@@ -12,11 +12,11 @@ const userSchema = Schema(
     role: {
       type: String,
       default: 'student',
-      enum: ['student', 'teacher', 'admin'],
+      enum: ['student', 'teacher', 'admin']
     },
     _student: { type: Schema.Types.ObjectId, ref: 'Student' },
     _teacher: { type: Schema.Types.ObjectId, ref: 'Teacher' },
-    tokens: [{ token: { type: String, required: true } }],
+    tokens: [{ token: { type: String, required: true } }]
   },
   { timestamps: true }
 );
@@ -54,7 +54,7 @@ userSchema.methods.toJSON = function() {
 userSchema.methods.generateAuthToken = async function() {
   const user = this;
   const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET, {
-    expiresIn: '1h',
+    expiresIn: '1h'
   });
   user.tokens = user.tokens.concat({ token });
   await user.save();
