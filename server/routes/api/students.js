@@ -12,4 +12,15 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
+/* Get student by id */
+router.get('/:id', auth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const student = await Student.findById(id);
+    return !student ? res.sendStatus(404) : res.send(student);
+  } catch (e) {
+    return res.sendStatus(400);
+  }
+});
+
 module.exports = router;

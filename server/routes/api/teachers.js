@@ -12,6 +12,14 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-/* POST add lesson */
-
+/* Get teacher by id */
+router.get('/:id', auth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const teacher = await Teacher.findById(id);
+    return !teacher ? res.sendStatus(404) : res.send(teacher);
+  } catch (e) {
+    return res.sendStatus(400);
+  }
+});
 module.exports = router;

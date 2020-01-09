@@ -1,9 +1,10 @@
 const router = require('express').Router();
 const auth = require('../../config/auth');
+const isAdmin = require('../../utils/isAdmin');
 const Grade = require('../../models/Grade');
 
 /* Get all grades */
-router.get('/', auth, async (req, res) => {
+router.get('/', auth, isAdmin, async (req, res) => {
   try {
     const grades = await Grade.find({})
       .populate({
@@ -18,6 +19,32 @@ router.get('/', auth, async (req, res) => {
     res.send(grades);
   } catch (e) {
     res.status(400).send(e);
+  }
+});
+
+/* Get grade by id */
+router.get('/:id', auth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const grade = await Grade.findById(id);
+    return !grade ? res.sendStatus(404) : res.send(grade);
+  } catch (e) {
+    return res.sendStatus(400);
+  }
+});
+
+/* Get grade by student id */
+router.get('/student/:id', auth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const grades = await Grade.find({ _student: id }).populate({
+      path: '_lesson',
+      select: ['title', 'description', '_teacher'],
+      populate: { path: '_teacher', populate: { path: '_user', select: ['name', 'email'] } }
+    });
+    return !grades ? res.sendStatus(404) : res.send(grades);
+  } catch (e) {
+    return res.sendStatus(400);
   }
 });
 
