@@ -1,7 +1,10 @@
 const router = require('express').Router();
 const auth = require('../../config/auth');
 const isAdmin = require('../../utils/isAdmin');
+const isTeacher = require('../../utils/isTeacher');
+const isStudent = require('../../utils/isStudent');
 const Grade = require('../../models/Grade');
+const Lesson = require('../../models/Lesson');
 
 /* Get all grades */
 router.get('/', auth, isAdmin, async (req, res) => {
@@ -23,7 +26,7 @@ router.get('/', auth, isAdmin, async (req, res) => {
 });
 
 /* Get grade by id */
-router.get('/:id', auth, async (req, res) => {
+router.get('/:id', auth, isAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const grade = await Grade.findById(id);
@@ -34,7 +37,7 @@ router.get('/:id', auth, async (req, res) => {
 });
 
 /* Get grade by student id */
-router.get('/student/:id', auth, async (req, res) => {
+router.get('/student/:id', auth, isStudent, async (req, res) => {
   try {
     const { id } = req.params;
     const grades = await Grade.find({ _student: id }).populate({
@@ -49,14 +52,19 @@ router.get('/student/:id', auth, async (req, res) => {
 });
 
 /* Create a grade */
-router.post('/', auth, async (req, res) => {
+router.post('/', auth, isTeacher, async (req, res) => {
   const { grade, studentId: _student, lessonId: _lesson } = req.body;
+  const lesson = await Lesson.findById(_lesson); // find the specific lesson
+
+  if (req.user.role !== 'admin' && lesson._teacher !== req.user._id)
+    return res.status(401).send({ error: 'This lesson is not yours...' });
+
   const newGrade = new Grade({ grade, _student, _lesson });
   try {
     await newGrade.save();
-    res.send(newGrade);
+    return res.send(newGrade);
   } catch (e) {
-    res.status(400).send(e);
+    return res.status(400).send(e);
   }
 });
 
