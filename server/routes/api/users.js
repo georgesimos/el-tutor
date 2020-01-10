@@ -67,8 +67,7 @@ router.get('/:id', auth, isAdmin, async (req, res) => {
 router.patch('/me', auth, async (req, res) => {
   const validationErrors = [];
   const updates = Object.keys(req.body);
-  const profileUpdates = ['name', 'gender', 'location', 'website'];
-  const allowedUpdates = ['email', 'password', 'role', ...profileUpdates];
+  const allowedUpdates = ['email', 'name', 'password', 'role'];
   const isValidOperation = updates.every(update => {
     const isValid = allowedUpdates.includes(update);
     if (!isValid) validationErrors.push(update);
@@ -81,7 +80,6 @@ router.patch('/me', auth, async (req, res) => {
   try {
     const { user } = req;
     updates.forEach(update => {
-      if (profileUpdates.includes(update)) user.profile[update] = req.body[update];
       user[update] = req.body[update];
     });
 
@@ -96,8 +94,7 @@ router.patch('/me', auth, async (req, res) => {
 router.patch('/:id', auth, isAdmin, async (req, res) => {
   const validationErrors = [];
   const updates = Object.keys(req.body);
-  const profileUpdates = ['name', 'gender', 'location', 'website'];
-  const allowedUpdates = ['email', 'password', 'role', ...profileUpdates];
+  const allowedUpdates = ['email', 'name', 'password', 'role'];
   const isValidOperation = updates.every(update => {
     const isValid = allowedUpdates.includes(update);
     if (!isValid) validationErrors.push(update);
@@ -112,7 +109,6 @@ router.patch('/:id', auth, isAdmin, async (req, res) => {
     const user = await User.findById(_id);
     if (!user) return res.sendStatus(404);
     updates.forEach(update => {
-      if (profileUpdates.includes(update)) user.profile[update] = req.body[update];
       user[update] = req.body[update];
     });
     await user.save();
