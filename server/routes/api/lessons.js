@@ -1,11 +1,12 @@
 const router = require('express').Router();
 const auth = require('../../config/auth');
+const isAdmin = require('../../utils/isAdmin');
 const Lesson = require('../../models/Lesson');
 const Teacher = require('../../models/Teacher');
 const Student = require('../../models/Student');
 
 /* Create a Lesson */
-router.post('/', auth, async (req, res) => {
+router.post('/', auth, isAdmin, async (req, res) => {
   if (req.user.role !== 'admin')
     return res.status(401).send({
       message: 'Only Admin can create a lesson'
@@ -47,7 +48,7 @@ router.post('/', auth, async (req, res) => {
 });
 
 /* Get all lessons */
-router.get('/', auth, async (req, res) => {
+router.get('/', auth, isAdmin, async (req, res) => {
   try {
     const lessons = await Lesson.find({})
       .populate({ path: '_teacher', populate: { path: '_user', select: ['name', 'email'] } })
@@ -60,7 +61,7 @@ router.get('/', auth, async (req, res) => {
 });
 
 /* Get lesson by id */
-router.get('/:id', auth, async (req, res) => {
+router.get('/:id', auth, isAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const lessons = await Lesson.findById(id)
@@ -74,7 +75,7 @@ router.get('/:id', auth, async (req, res) => {
 });
 
 /* Update lesson by id */
-router.patch('/:id', auth, async (req, res) => {
+router.patch('/:id', auth, isAdmin, async (req, res) => {
   const validationErrors = [];
   const updates = Object.keys(req.body);
   const allowedUpdates = ['title', 'description'];
@@ -102,7 +103,7 @@ router.patch('/:id', auth, async (req, res) => {
 });
 
 /* Delete lesson by id */
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:id', auth, isAdmin, async (req, res) => {
   const _id = req.params.id;
   try {
     const lesson = await Lesson.findByIdAndDelete(_id);
