@@ -4,6 +4,7 @@ const Student = require('../../models/Student');
 const Teacher = require('../../models/Teacher');
 const auth = require('../../config/auth');
 const haveAdmin = require('../../utils/haveAdmin');
+const isAdmin = require('../../utils/isAdmin');
 
 /* Create a user */
 router.post('/', haveAdmin, async (req, res) => {
@@ -33,7 +34,7 @@ router.post('/', haveAdmin, async (req, res) => {
 });
 
 /* Get all users */
-router.get('/', auth, async (req, res) => {
+router.get('/', auth, isAdmin, async (req, res) => {
   try {
     const users = await User.find({});
     res.send(users);
@@ -52,7 +53,7 @@ router.get('/me', auth, async (req, res) => {
 });
 
 /* Get user by id */
-router.get('/:id', auth, async (req, res) => {
+router.get('/:id', auth, isAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const user = await User.findById(id);
@@ -92,7 +93,7 @@ router.patch('/me', auth, async (req, res) => {
 });
 
 /* Update user by id */
-router.patch('/:id', auth, async (req, res) => {
+router.patch('/:id', auth, isAdmin, async (req, res) => {
   const validationErrors = [];
   const updates = Object.keys(req.body);
   const profileUpdates = ['name', 'gender', 'location', 'website'];
@@ -133,7 +134,7 @@ router.delete('/me', auth, async (req, res) => {
 });
 
 /* Delete user by id */
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:id', auth, isAdmin, async (req, res) => {
   const _id = req.params.id;
   try {
     const user = await User.findByIdAndDelete(_id);
