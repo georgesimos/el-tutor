@@ -1,9 +1,10 @@
 const router = require('express').Router();
 const auth = require('../../config/auth');
+const isAdmin = require('../../utils/isAdmin');
 const Teacher = require('../../models/Teacher');
 
 /* Get all teachers */
-router.get('/', auth, async (req, res) => {
+router.get('/', auth, isAdmin, async (req, res) => {
   try {
     const teachers = await Teacher.find({}).populate('_user', ['name', 'email']);
     res.send(teachers);
@@ -13,7 +14,7 @@ router.get('/', auth, async (req, res) => {
 });
 
 /* Get teacher by id */
-router.get('/:id', auth, async (req, res) => {
+router.get('/:id', auth, isAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const teacher = await Teacher.findById(id);
