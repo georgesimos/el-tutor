@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node server",
     "dev": "nodemon server",
+    "install-client": "npm i --prefix client",
+    "start-client": "npm start --prefix client",
     "seed-database": "node seed.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier-eslint \"**/*.{js,json}\" --write",
