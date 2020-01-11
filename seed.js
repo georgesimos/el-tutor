@@ -39,7 +39,7 @@ const createUsers = role => {
   console.log(chalk.green('Creating'), role);
   return new Promise((resolve, reject) => {
     const users = [];
-    for (let i = 0; i < 50; i += 1) {
+    for (let i = 0; i < 5; i += 1) {
       const firstName = faker.name.firstName();
       const lastName = faker.name.lastName();
       const email = faker.internet.email(firstName, lastName);
@@ -115,6 +115,7 @@ const createGrades = lessons => {
     lessons.forEach(lesson => {
       const { _students } = lesson;
       const newGrade = {
+        _id: new mongoose.Types.ObjectId(),
         grade: Math.floor(Math.random() * 10) + 1,
         _lesson: lesson._id,
         _student: _students[Math.floor(Math.random() * _students.length)]._id
@@ -161,15 +162,27 @@ async function saveTeachers(teachers, lessons) {
     }
   });
 }
-async function saveStudents(students, lessonsArr) {
+async function saveStudents(students, lessonsArr, gradesArr) {
   console.log(chalk.green('Saving'), 'student');
   const studentsClone = students.map(student => ({ ...student, lessons: [] }));
   lessonsArr.forEach(lesson => {
     if (lesson._students) {
       lesson._students.forEach(stu => {
         const index = students.findIndex(student => student._student === stu);
-        studentsClone[index].lessons.push(lesson._id);
+        studentsClone[index].lessons.push({ lesson: lesson._id });
       });
+    }
+  });
+
+  gradesArr.forEach(grade => {
+    if (grade._student) {
+      const studentIndex = students.findIndex(student => student._student === grade._student);
+      const lessonIndex = lessonsArr.findIndex(lesson => lesson._id === grade._lesson);
+
+      studentsClone[studentIndex].lessons[lessonIndex] = {
+        ...studentsClone[studentIndex].lessons[lessonIndex],
+        grade: grade._id
+      };
     }
   });
 
@@ -213,23 +226,23 @@ const saveGrades = async grades => {
 const seed = async () => {
   console.log(chalk.green('seed'), 'just started');
 
-  setTimeout(() => saveAdmin(), 2000);
-
   const teachers = await createUsers('teacher');
   const students = await createUsers('student');
   const lessons = await createLessons(teachers, students);
   const grades = await createGrades(lessons, students);
 
-  saveTeachers(teachers, lessons);
-  saveStudents(students, lessons);
-  saveLessons(lessons);
+  setTimeout(() => {
+    saveTeachers(teachers, lessons);
+    saveStudents(students, lessons, grades);
+    saveLessons(lessons);
+    saveGrades(grades);
+  }, 1000);
 
-  // setTimeout(() => saveGrades(grades), 2000);
-
+  setTimeout(() => saveAdmin(), 3000);
   setTimeout(() => {
     console.log(chalk.green('seed'), 'just ended');
     process.exit();
-  }, 30000);
+  }, 10000);
 };
 
 connectDB(seed);
