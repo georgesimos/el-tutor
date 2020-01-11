@@ -13,7 +13,8 @@ import {
   toggleGradeDialog,
   addGrade,
   updateGrade,
-  getLessons
+  getLessons,
+  getStudentProfile
 } from '../../../store/actions';
 import { ResponsiveDialog } from '../../../components';
 
@@ -24,9 +25,14 @@ class Grades extends Component {
   };
 
   componentDidMount() {
-    this.props.getGrades();
-    this.props.getUsers();
-    this.props.getLessons();
+    const { user } = this.props;
+    if (user && user.role === 'admin') {
+      this.props.getGrades();
+      this.props.getUsers();
+      this.props.getLessons();
+    } else if (user && user.role === 'student') {
+      this.props.getStudentProfile(user._student);
+    }
   }
 
   handleSelect = selectedGrades => {
@@ -37,6 +43,7 @@ class Grades extends Component {
 
   render() {
     const {
+      user,
       classes,
       grades,
       students,
@@ -51,14 +58,18 @@ class Grades extends Component {
       deleteGrade
     } = this.props;
 
+    const isAdmin = user && user.role === 'admin';
+
     return (
       <div className={classes.root}>
-        <GradesToolbar
-          grades={grades}
-          selectedGrades={selectedGrades}
-          toggleDialog={toggleGradeDialog}
-          deleteGrade={() => deleteGrade(selectedGrades[0])}
-        />
+        {isAdmin && (
+          <GradesToolbar
+            grades={grades}
+            selectedGrades={selectedGrades}
+            toggleDialog={toggleGradeDialog}
+            deleteGrade={() => deleteGrade(selectedGrades[0])}
+          />
+        )}
         <div className={classes.content}>
           {!grades.length ? (
             <div className={classes.progressWrapper}>
@@ -73,21 +84,28 @@ class Grades extends Component {
             />
           )}
         </div>
-        <ResponsiveDialog id="Add-grade" open={openDialog} handleClose={() => toggleGradeDialog()}>
-          <AddGrade
-            selectedGrade={grades.find(grade => grade._id === selectedGrades[0])}
-            addGrade={addGrade}
-            lessons={lessons}
-            students={students}
-            updateGrade={updateGrade}
-          />
-        </ResponsiveDialog>
+        {isAdmin && (
+          <ResponsiveDialog
+            id="Add-grade"
+            open={openDialog}
+            handleClose={() => toggleGradeDialog()}
+          >
+            <AddGrade
+              selectedGrade={grades.find(grade => grade._id === selectedGrades[0])}
+              addGrade={addGrade}
+              lessons={lessons}
+              students={students}
+              updateGrade={updateGrade}
+            />
+          </ResponsiveDialog>
+        )}
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ userState, gradeState, lessonState }) => ({
+const mapStateToProps = ({ authState, userState, gradeState, lessonState }) => ({
+  user: authState.user,
   lessons: lessonState.lessons,
   students: userState.users.filter(user => user.role === 'student'),
   grades: gradeState.grades,
@@ -103,6 +121,7 @@ const mapDispatchToProps = {
   toggleGradeDialog,
   addGrade,
   updateGrade,
-  deleteGrade
+  deleteGrade,
+  getStudentProfile
 };
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Grades));
