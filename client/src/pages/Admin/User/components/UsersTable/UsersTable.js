@@ -47,7 +47,6 @@ class UsersTable extends Component {
   render() {
     const { classes, className, users, selectedUsers, onSelect, onSelectAll } = this.props;
     const { rowsPerPage, page } = this.state;
-
     const rootClassName = classNames(classes.root, className);
     return (
       <Portlet className={rootClassName}>
@@ -71,10 +70,8 @@ class UsersTable extends Component {
             </TableHead>
             <TableBody>
               {users
-                .filter(user => {
-                  return user;
-                })
-                .slice(0, rowsPerPage)
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(user => (
                   <TableRow
                     className={classes.tableRow}

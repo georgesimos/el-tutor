@@ -5,7 +5,7 @@ export default theme => ({
     display: 'flex',
     alignItems: 'center',
     marginTop: theme.spacing(1),
-    justifyContent: 'flex-end'
+    justifyContent: 'space-between'
   },
   deleteButton: {
     color: theme.palette.danger.main,

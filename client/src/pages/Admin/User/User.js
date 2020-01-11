@@ -14,8 +14,11 @@ import {
   updateUser
 } from '../../../store/actions';
 import { ResponsiveDialog } from '../../../components';
+import { match } from '../../../utils';
 
 class User extends Component {
+  state = { search: '' };
+
   static propTypes = {
     className: PropTypes.string,
     classes: PropTypes.object.isRequired
@@ -29,26 +32,10 @@ class User extends Component {
     this.setState({ selectedUsers });
   };
 
-  renderUsers() {
-    const { classes, users, selectedUsers, selectUser, selectAllUsers } = this.props;
+  onChangeSearch = e => this.setState({ search: e.target.value });
 
-    if (!users.length) {
-      return (
-        <div className={classes.progressWrapper}>
-          <CircularProgress />
-        </div>
-      );
-    }
-    return (
-      <UsersTable
-        onSelect={selectUser}
-        onSelectAll={selectAllUsers}
-        users={users}
-        selectedUsers={selectedUsers}
-      />
-    );
-  }
   render() {
+    const { search } = this.state;
     const {
       classes,
       users,
@@ -60,15 +47,32 @@ class User extends Component {
       deleteUser
     } = this.props;
 
+    const filteredUsers = match(search, users, 'email');
+
     return (
       <div className={classes.root}>
         <UsersToolbar
-          users={users}
+          users={filteredUsers}
+          search={search}
+          onChangeSearch={this.onChangeSearch}
           selectedUsers={selectedUsers}
           toggleDialog={toggleUserDialog}
           deleteUser={() => deleteUser(selectedUsers[0])}
         />
-        <div className={classes.content}>{this.renderUsers()}</div>
+        <div className={classes.content}>
+          {!filteredUsers.length ? (
+            <div className={classes.progressWrapper}>
+              <CircularProgress />
+            </div>
+          ) : (
+            <UsersTable
+              onSelect={selectUser}
+              onSelectAll={selectAllUsers}
+              users={filteredUsers}
+              selectedUsers={selectedUsers}
+            />
+          )}
+        </div>
         <ResponsiveDialog id="Add-user" open={openDialog} handleClose={() => toggleUserDialog()}>
           <AddUser
             selectedUser={users.find(user => user._id === selectedUsers[0])}
