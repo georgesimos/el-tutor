@@ -53,7 +53,7 @@ router.get('/student/:id', auth, isStudent, async (req, res) => {
 
 /* Create a grade */
 router.post('/', auth, isTeacher, async (req, res) => {
-  const { grade, studentId: _student, lessonId: _lesson } = req.body;
+  const { grade, _student, _lesson } = req.body;
   const lesson = await Lesson.findById(_lesson); // find the specific lesson
 
   if (req.user.role !== 'admin' && lesson._teacher !== req.user._id)
