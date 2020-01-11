@@ -1,6 +1,5 @@
 import {
   GET_GRADES,
-  ADD_GRADE,
   UPDATE_GRADE,
   DELETE_GRADE,
   TOGGLE_GRADE_DIALOG,
@@ -51,10 +50,9 @@ export const addGrade = grade => async dispatch => {
       body: JSON.stringify(grade)
     });
     const data = await response.json();
-    const newGrade = data.grade;
     if (response.ok) {
       dispatch(setAlert('Grade Created', 'success', 5000));
-      dispatch({ type: ADD_GRADE, payload: newGrade });
+      dispatch(getGrades());
       return { status: 'success', message: 'Grade Created' };
     } else {
       throw new Error(data._message);
