@@ -8,7 +8,6 @@ import {
   FormControl,
   InputLabel,
   Select,
-  Input,
   FormHelperText
 } from '@material-ui/core';
 import { Button, TextField, MenuItem } from '@material-ui/core';
