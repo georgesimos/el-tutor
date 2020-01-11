@@ -32,40 +32,30 @@ class Topbar extends Component {
   };
 
   render() {
-    const {
-      classes,
-      ToolbarClasses,
-      children,
-      isSidebarOpen,
-      onToggleSidebar
-    } = this.props;
+    const { classes, ToolbarClasses, children, isSidebarOpen, onToggleSidebar } = this.props;
     return (
       <div className={`${classes.root} , ${ToolbarClasses}`}>
         <Toolbar className={classes.toolbar}>
           <div className={classes.brandWrapper}>
-            <div className={classes.logo}>Movie +</div>
-            <IconButton
-              className={classes.menuButton}
-              aria-label="Menu"
-              onClick={onToggleSidebar}>
+            <div className={classes.logo}>_el Tutor</div>
+            <IconButton className={classes.menuButton} aria-label="Menu" onClick={onToggleSidebar}>
               {isSidebarOpen ? <CloseIcon /> : <MenuIcon />}
             </IconButton>
           </div>
 
           <NavLink className={classes.title} to="/">
-            Cinema App
+            Home
           </NavLink>
 
           <IconButton
             className={classes.notificationsButton}
-            onClick={() => console.log('Notification')}>
+            onClick={() => console.log('Notification')}
+          >
             <Badge badgeContent={4} color="primary" variant="dot">
               <NotificationsIcon />
             </Badge>
           </IconButton>
-          <IconButton
-            className={classes.signOutButton}
-            onClick={this.handleSignOut}>
+          <IconButton className={classes.signOutButton} onClick={this.handleSignOut}>
             <InputIcon />
           </IconButton>
         </Toolbar>
@@ -77,7 +67,4 @@ class Topbar extends Component {
 const mapStateToProps = state => ({
   auth: state.authState
 });
-export default connect(
-  mapStateToProps,
-  { logout }
-)(withStyles(styles)(Topbar));
+export default connect(mapStateToProps, { logout })(withStyles(styles)(Topbar));

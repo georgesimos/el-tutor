@@ -38,23 +38,23 @@ class Sidebar extends Component {
             activeClassName={classes.activeListItem}
             className={classes.listItem}
             component={NavLink}
-            to="/admin/students"
+            to="/admin/lessons"
           >
             <ListItemIcon className={classes.listItemIcon}>
               <PeopleIcon />
             </ListItemIcon>
-            <ListItemText classes={{ primary: classes.listItemText }} primary="Students" />
+            <ListItemText classes={{ primary: classes.listItemText }} primary="Lessons" />
           </ListItem>
           <ListItem
             activeClassName={classes.activeListItem}
             className={classes.listItem}
             component={NavLink}
-            to="/admin/teachers"
+            to="/admin/grades"
           >
             <ListItemIcon className={classes.listItemIcon}>
               <PeopleIcon />
             </ListItemIcon>
-            <ListItemText classes={{ primary: classes.listItemText }} primary="Teachers" />
+            <ListItemText classes={{ primary: classes.listItemText }} primary="Grades" />
           </ListItem>
           {user && user.role === 'admin' && (
             <ListItem

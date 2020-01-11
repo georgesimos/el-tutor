@@ -23,7 +23,6 @@ export default theme => ({
     flexShrink: 0
   },
   logo: {
-    width: 'calc(100% - 160px)',
     maxWidth: '100%',
     margin: 'auto',
     fontFamily: 'Montserrat,sans-serif',
