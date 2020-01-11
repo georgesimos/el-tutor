@@ -5,6 +5,7 @@ import { withStyles, CircularProgress } from '@material-ui/core';
 import styles from './styles';
 import { LessonsToolbar, LessonsTable, AddLesson } from './components';
 import {
+  getStudentProfile,
   getUsers,
   getLessons,
   deleteLesson,
@@ -26,8 +27,13 @@ class Lessons extends Component {
   };
 
   componentDidMount() {
-    this.props.getLessons();
-    this.props.getUsers();
+    const { user } = this.props;
+    if (user && user.role === 'admin') {
+      this.props.getLessons();
+      this.props.getUsers();
+    } else if (user && user.role === 'student') {
+      this.props.getStudentProfile(user._student);
+    }
   }
 
   handleSelect = selectedLessons => {
@@ -39,6 +45,7 @@ class Lessons extends Component {
   render() {
     const { search } = this.state;
     const {
+      user,
       classes,
       lessons,
       students,
@@ -53,6 +60,7 @@ class Lessons extends Component {
       deleteLesson
     } = this.props;
 
+    const isAdmin = user && user.role === 'admin';
     const filteredLessons = match(search, lessons, 'title');
 
     return (
@@ -97,7 +105,8 @@ class Lessons extends Component {
   }
 }
 
-const mapStateToProps = ({ userState, lessonState }) => ({
+const mapStateToProps = ({ authState, userState, lessonState }) => ({
+  user: authState.user,
   teachers: userState.users.filter(user => user.role === 'teacher'),
   students: userState.users.filter(user => user.role === 'student'),
   lessons: lessonState.lessons,
@@ -105,6 +114,7 @@ const mapStateToProps = ({ userState, lessonState }) => ({
   openDialog: lessonState.openDialog
 });
 const mapDispatchToProps = {
+  getStudentProfile,
   getUsers,
   getLessons,
   selectLesson,
