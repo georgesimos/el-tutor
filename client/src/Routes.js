@@ -11,6 +11,7 @@ import { history } from './utils';
 const Account = lazy(() => import('./pages/Admin/Account/Account'));
 const User = lazy(() => import('./pages/Admin/User/User'));
 const Lessons = lazy(() => import('./pages/Admin/Lessons/Lessons'));
+const Grades = lazy(() => import('./pages/Admin/Grades/Grades'));
 
 // Register - Login
 const Register = lazy(() => import('./pages/Public/Register/Register'));
@@ -29,6 +30,7 @@ const Routes = () => (
         <ProtectedRoute exact path="/admin/account" layout={AdminLayout} component={Account} />
         <ProtectedRoute exact path="/admin/users" layout={AdminLayout} component={User} />
         <WithLayoutRoute exact path="/admin/lessons" layout={AdminLayout} component={Lessons} />
+        <WithLayoutRoute exact path="/admin/grades" layout={AdminLayout} component={Grades} />
         <Route path="*" component={() => '404 NOT FOUND'} />
       </Switch>
     </Router>
