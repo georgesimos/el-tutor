@@ -18,19 +18,19 @@ const Register = lazy(() => import('./pages/Public/Register/Register'));
 const Login = lazy(() => import('./pages/Public/Login/Login'));
 
 // Public
-const Home = lazy(() => import('./pages/Public/HomePage/HomePage'));
+// const Home = lazy(() => import('./pages/Public/HomePage/HomePage'));
 
 const Routes = () => (
   <Suspense fallback={<Loading />}>
     <Router history={history}>
       <Switch>
-        <WithLayoutRoute exact path="/" layout={PublicLayout} component={Home} />
+        <Route exact path="/" layout={PublicLayout} component={Login} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />
         <ProtectedRoute exact path="/admin/account" layout={AdminLayout} component={Account} />
         <ProtectedRoute exact path="/admin/users" layout={AdminLayout} component={User} />
-        <WithLayoutRoute exact path="/admin/lessons" layout={AdminLayout} component={Lessons} />
-        <WithLayoutRoute exact path="/admin/grades" layout={AdminLayout} component={Grades} />
+        <ProtectedRoute exact path="/admin/lessons" layout={AdminLayout} component={Lessons} />
+        <ProtectedRoute exact path="/admin/grades" layout={AdminLayout} component={Grades} />
         <Route path="*" component={() => '404 NOT FOUND'} />
       </Switch>
     </Router>
