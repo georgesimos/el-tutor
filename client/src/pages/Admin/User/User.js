@@ -17,7 +17,7 @@ import { ResponsiveDialog } from '../../../components';
 import { match } from '../../../utils';
 
 class User extends Component {
-  state = { search: '' };
+  state = { search: '', role: 'all' };
 
   static propTypes = {
     className: PropTypes.string,
@@ -33,9 +33,10 @@ class User extends Component {
   };
 
   onChangeSearch = e => this.setState({ search: e.target.value });
+  onChangeRole = e => this.setState({ role: e.target.value });
 
   render() {
-    const { search } = this.state;
+    const { search, role } = this.state;
     const {
       classes,
       users,
@@ -47,7 +48,8 @@ class User extends Component {
       deleteUser
     } = this.props;
 
-    const filteredUsers = match(search, users, 'email');
+    const filterByRole = role !== 'all' ? users.filter(user => user.role === role) : users;
+    const filteredUsers = match(search, filterByRole, 'email');
 
     return (
       <div className={classes.root}>
@@ -55,6 +57,8 @@ class User extends Component {
           users={filteredUsers}
           search={search}
           onChangeSearch={this.onChangeSearch}
+          role={role}
+          onChangeRole={this.onChangeRole}
           selectedUsers={selectedUsers}
           toggleDialog={toggleUserDialog}
           deleteUser={() => deleteUser(selectedUsers[0])}

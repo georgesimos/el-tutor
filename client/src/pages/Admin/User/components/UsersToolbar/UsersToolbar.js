@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { withStyles } from '@material-ui/core';
+import { withStyles, TextField, MenuItem } from '@material-ui/core';
 import { Button, IconButton } from '@material-ui/core';
 import { Delete as DeleteIcon } from '@material-ui/icons';
 import { SearchInput } from '../../../../../components';
@@ -15,7 +15,9 @@ const UsersToolbar = props => {
     selectedUsers,
     deleteUser,
     search,
-    onChangeSearch
+    onChangeSearch,
+    role,
+    onChangeRole
   } = props;
   const rootClassName = classNames(classes.root, className);
 
@@ -28,6 +30,23 @@ const UsersToolbar = props => {
           value={search}
           onChange={onChangeSearch}
         />
+
+        <TextField
+          className={classes.roleField}
+          fullWidth
+          select
+          label="Role"
+          value={role}
+          variant="outlined"
+          onChange={onChangeRole}
+        >
+          {['all', 'admin', 'student', 'teacher'].map(option => (
+            <MenuItem key={option} value={option}>
+              {option}
+            </MenuItem>
+          ))}
+        </TextField>
+
         <div>
           {selectedUsers.length > 0 && (
             <IconButton className={classes.deleteButton} onClick={deleteUser}>

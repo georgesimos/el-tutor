@@ -13,5 +13,10 @@ export default theme => ({
   },
   searchInput: {
     marginRight: theme.spacing(1)
+  },
+  roleField: {
+    marginRight: 'auto',
+    marginLeft: theme.spacing(1),
+    maxWidth: '200px'
   }
 });
