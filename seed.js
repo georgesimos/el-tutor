@@ -37,66 +37,98 @@ const connectDB = async cb => {
 
 const createUsers = role => {
   console.log(chalk.green('Creating'), role);
-  const users = [];
-  for (let i = 0; i < 500; i += 1) {
-    const firstName = faker.name.firstName();
-    const lastName = faker.name.lastName();
-    const email = faker.internet.email(firstName, lastName);
-    const newUser = {
-      _id: new mongoose.Types.ObjectId(),
-      name: `${firstName} ${lastName}`,
-      email,
-      password: 'password123',
-      role
-    };
-    users.push(newUser);
-  }
-  return users;
+  return new Promise((resolve, reject) => {
+    const users = [];
+    for (let i = 0; i < 50; i += 1) {
+      const firstName = faker.name.firstName();
+      const lastName = faker.name.lastName();
+      const email = faker.internet.email(firstName, lastName);
+      const roleProps =
+        role === 'student'
+          ? { _student: new mongoose.Types.ObjectId() }
+          : { _teacher: new mongoose.Types.ObjectId() };
+      const newUser = {
+        _id: new mongoose.Types.ObjectId(),
+        name: `${firstName} ${lastName}`,
+        email,
+        password: 'password123',
+        role,
+        ...roleProps
+      };
+      users.push(newUser);
+    }
+
+    if (users.length) {
+      resolve(users);
+    } else {
+      reject(new Error('Reject: Users not created'));
+    }
+  });
+  // return users;
 };
 
+const generateIndexes = (limit, range) => {
+  const result = [];
+  while (result.length < limit) {
+    const random = Math.floor(Math.random() * range);
+    if (result.indexOf(random) === -1) result.push(random);
+  }
+  return result;
+};
 const generateStudentsId = students => {
   const studentsId = [];
-  const limit = students.length > 20 ? 20 : students.length;
-  for (let i = 0; i < limit; i += 1) {
-    studentsId.push(students[i]._id);
-  }
+  const limit = students.length > 25 ? 25 : students.length;
+  const indexes = generateIndexes(limit, students.length);
+  indexes.forEach(i => studentsId.push(students[i]._student));
   return studentsId;
 };
 
 const createLessons = (teachers, students) => {
   console.log(chalk.green('Creating'), 'Lessons');
-  const lessons = [];
-  const studentsId = generateStudentsId(students);
-  teachers.forEach(teacher => {
-    const title = faker.name.title();
-    const description = faker.lorem.paragraph();
-    const newLesson = {
-      _id: new mongoose.Types.ObjectId(),
-      title,
-      description,
-      _teacher: teacher._id,
-      _students: studentsId
-    };
-    lessons.push(newLesson);
+  return new Promise((resolve, reject) => {
+    const lessons = [];
+    teachers.forEach(teacher => {
+      const studentsId = generateStudentsId(students);
+      const title = faker.name.title();
+      const description = faker.lorem.paragraph();
+      const newLesson = {
+        _id: new mongoose.Types.ObjectId(),
+        title,
+        description,
+        _teacher: teacher._teacher,
+        _students: studentsId
+      };
+      lessons.push(newLesson);
+    });
+    if (lessons.length) {
+      resolve(lessons);
+    } else {
+      reject(new Error('Reject: Lessons not created'));
+    }
   });
-  return lessons;
 };
 
 const createGrades = lessons => {
   console.log(chalk.green('Creating'), 'Grades');
-  const grades = [];
-  lessons.forEach(lesson => {
-    const { _students } = lesson;
-    const newGrade = {
-      grade: Math.floor(Math.random() * 10) + 1,
-      _lesson: lesson._id,
-      _student: _students[Math.floor(Math.random() * _students.length)]._id
-    };
-    grades.push(newGrade);
+  return new Promise((resolve, reject) => {
+    const grades = [];
+    lessons.forEach(lesson => {
+      const { _students } = lesson;
+      const newGrade = {
+        grade: Math.floor(Math.random() * 10) + 1,
+        _lesson: lesson._id,
+        _student: _students[Math.floor(Math.random() * _students.length)]._id
+      };
+      grades.push(newGrade);
+    });
+    if (grades.length) {
+      resolve(grades);
+    } else {
+      reject(new Error('Reject: Grades not created'));
+    }
   });
-
-  return grades;
 };
+
 const saveAdmin = async () => {
   console.log(chalk.green('Saving'), 'Admin');
   const admin = await new User({
@@ -107,34 +139,53 @@ const saveAdmin = async () => {
   });
   await admin.save();
 };
-const saveTeachers = async teachers => {
+async function saveTeachers(teachers, lessons) {
   console.log(chalk.green('Saving'), 'teachers');
-  teachers.forEach(async teacher => {
-    const { _id, ...rest } = teacher;
+  const teachersClone = [...teachers];
+  lessons.forEach(lesson => {
+    if (lesson._teacher) {
+      const index = teachers.findIndex(teacher => teacher._teacher === lesson._teacher);
+      teachersClone[index] = { ...teachers[index], lesson: lesson._id };
+    }
+  });
+  teachersClone.forEach(async teacher => {
+    const { lesson, ...rest } = teacher;
+    if (!teacher._teacher) return;
     try {
-      const newUser = await new User(rest);
-      const newTeacher = await new Teacher({ _id, _user: newUser._id });
+      const newUser = await new User({ ...rest });
+      const newTeacher = await new Teacher({ _id: teacher._teacher, _user: newUser._id, lesson });
       await newUser.save();
       await newTeacher.save();
     } catch (error) {
       console.log(error);
     }
   });
-};
-const saveStudents = async students => {
+}
+async function saveStudents(students, lessonsArr) {
   console.log(chalk.green('Saving'), 'student');
-  students.forEach(async student => {
-    const { _id, ...rest } = student;
+  const studentsClone = students.map(student => ({ ...student, lessons: [] }));
+  lessonsArr.forEach(lesson => {
+    if (lesson._students) {
+      lesson._students.forEach(stu => {
+        const index = students.findIndex(student => student._student === stu);
+        studentsClone[index].lessons.push(lesson._id);
+      });
+    }
+  });
+
+  studentsClone.forEach(async student => {
+    const { lessons, ...rest } = student;
+    if (!student._student) return;
     try {
-      const newUser = await new User(rest);
-      const newStudent = await new Student({ _id, _user: newUser._id });
+      const newUser = await new User({ ...rest });
+      const newStudent = await new Student({ _id: student._student, _user: newUser._id, lessons });
       await newUser.save();
       await newStudent.save();
     } catch (error) {
       console.log(error);
     }
   });
-};
+}
 
 const saveLessons = async lessons => {
   console.log(chalk.green('Saving'), 'Lessons');
@@ -159,19 +210,21 @@ const saveGrades = async grades => {
   });
 };
 
-const seed = () => {
+const seed = async () => {
   console.log(chalk.green('seed'), 'just started');
 
-  const teachers = createUsers('teacher');
-  const students = createUsers('student');
-  const lessons = createLessons(teachers, students);
-  const grades = createGrades(lessons, students);
-
   setTimeout(() => saveAdmin(), 2000);
-  setTimeout(() => saveTeachers(teachers), 2000);
-  setTimeout(() => saveStudents(students), 2000);
-  setTimeout(() => saveLessons(lessons), 2000);
-  setTimeout(() => saveGrades(grades), 2000);
+
+  const teachers = await createUsers('teacher');
+  const students = await createUsers('student');
+  const lessons = await createLessons(teachers, students);
+  const grades = await createGrades(lessons, students);
+
+  saveTeachers(teachers, lessons);
+  saveStudents(students, lessons);
+  saveLessons(lessons);
+
+  // setTimeout(() => saveGrades(grades), 2000);
 
   setTimeout(() => {
     console.log(chalk.green('seed'), 'just ended');
