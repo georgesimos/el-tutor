@@ -164,12 +164,13 @@ async function saveTeachers(teachers, lessons) {
 }
 async function saveStudents(students, lessonsArr, gradesArr) {
   console.log(chalk.green('Saving'), 'student');
-  const studentsClone = students.map(student => ({ ...student, lessons: [] }));
+  const studentsClone = students.map(student => ({ ...student, lessons: [], grades: [] }));
+
   lessonsArr.forEach(lesson => {
     if (lesson._students) {
       lesson._students.forEach(stu => {
         const index = students.findIndex(student => student._student === stu);
-        studentsClone[index].lessons.push({ lesson: lesson._id });
+        studentsClone[index].lessons.push(lesson._id);
       });
     }
   });
@@ -177,21 +178,20 @@ async function saveStudents(students, lessonsArr, gradesArr) {
   gradesArr.forEach(grade => {
     if (grade._student) {
       const studentIndex = students.findIndex(student => student._student === grade._student);
-      const lessonIndex = lessonsArr.findIndex(lesson => lesson._id === grade._lesson);
-
-      studentsClone[studentIndex].lessons[lessonIndex] = {
-        ...studentsClone[studentIndex].lessons[lessonIndex],
-        grade: grade._id
-      };
+      studentsClone[studentIndex].grades.push(grade._id);
     }
   });
-
   studentsClone.forEach(async student => {
-    const { lessons, ...rest } = student;
+    const { lessons, grades, ...rest } = student;
     if (!student._student) return;
     try {
       const newUser = await new User({ ...rest });
-      const newStudent = await new Student({ _id: student._student, _user: newUser._id, lessons });
+      const newStudent = await new Student({
+        _id: student._student,
+        _user: newUser._id,
+        lessons,
+        grades
+      });
       await newUser.save();
       await newStudent.save();
     } catch (error) {
