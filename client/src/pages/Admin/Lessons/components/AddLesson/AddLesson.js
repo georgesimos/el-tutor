@@ -28,8 +28,8 @@ class AddLesson extends Component {
       this.setState({
         title,
         description,
-        _teacher,
-        _students
+        _teacher: _teacher._id,
+        _students: _students.map(s => s._id)
       });
     }
   }
