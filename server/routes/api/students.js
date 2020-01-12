@@ -20,11 +20,11 @@ router.get('/only/:id', auth, isStudent, async (req, res) => {
     const { id } = req.params;
     const student = await await Student.findById(id)
       .populate({
-        path: 'grades',
+        path: '_grades',
         populate: { path: '_lesson', populate: { path: '_teacher', populate: '_user' } }
       })
-      .populate({ path: 'grades', populate: { path: '_student', populate: '_user' } })
-      .populate({ path: 'lessons', populate: { path: '_teacher', populate: '_user' } })
+      .populate({ path: '_grades', populate: { path: '_student', populate: '_user' } })
+      .populate({ path: '_lessons', populate: { path: '_teacher', populate: '_user' } })
       .populate('_user', ['name', 'email']);
 
     return !student ? res.sendStatus(404) : res.send(student);
