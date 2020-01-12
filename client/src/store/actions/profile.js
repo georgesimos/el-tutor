@@ -15,8 +15,8 @@ export const getStudentProfile = id => async dispatch => {
     const student = await response.json();
     if (response.ok) {
       dispatch({ type: GET_STUDENT_PROFILE, payload: student });
-      dispatch({ type: GET_GRADES, payload: student.grades });
-      dispatch({ type: GET_LESSONS, payload: student.lessons });
+      dispatch({ type: GET_GRADES, payload: student._grades });
+      dispatch({ type: GET_LESSONS, payload: student._lessons });
     }
   } catch (error) {
     dispatch(setAlert(error.message, 'error', 5000));
