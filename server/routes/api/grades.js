@@ -51,6 +51,21 @@ router.get('/student/:id', auth, isStudent, async (req, res) => {
   }
 });
 
+/* Get grade by teacher id */
+router.get('/teacher/:id', auth, isTeacher, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const grades = await Grade.find({ _teacher: id }).populate({
+      path: '_lesson',
+      select: ['title', 'description', '_teacher'],
+      populate: { path: '_teacher', populate: { path: '_user', select: ['name', 'email'] } }
+    });
+    return !grades ? res.sendStatus(404) : res.send(grades);
+  } catch (e) {
+    return res.sendStatus(400);
+  }
+});
+
 /* Create a grade */
 router.post('/', auth, isTeacher, async (req, res) => {
   const { grade, _student, _lesson } = req.body;
