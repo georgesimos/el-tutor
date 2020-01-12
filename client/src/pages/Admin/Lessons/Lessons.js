@@ -67,21 +67,21 @@ class Lessons extends Component {
 
     const isAdmin = user && user.role === 'admin';
     const isTeacher = user && user.role === 'teacher';
+    const isStudent = user & (user.role === 'student');
     const filteredLessons = match(search, lessons, 'title');
 
     return (
       <div className={classes.root}>
-        {isAdmin ||
-          (isTeacher && (
-            <LessonsToolbar
-              lessons={filteredLessons}
-              search={search}
-              onChangeSearch={this.onChangeSearch}
-              selectedLessons={selectedLessons}
-              toggleDialog={toggleLessonDialog}
-              deleteLesson={() => deleteLesson(selectedLessons[0])}
-            />
-          ))}
+        {!isStudent && (
+          <LessonsToolbar
+            lessons={filteredLessons}
+            search={search}
+            onChangeSearch={this.onChangeSearch}
+            selectedLessons={selectedLessons}
+            toggleDialog={toggleLessonDialog}
+            deleteLesson={() => deleteLesson(selectedLessons[0])}
+          />
+        )}
         <div className={classes.content}>
           {!filteredLessons.length ? (
             <div className={classes.progressWrapper}>
