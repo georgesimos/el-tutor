@@ -28,12 +28,17 @@ class Lessons extends Component {
 
   componentDidMount() {
     const { user } = this.props;
-    if (user && user.role === 'admin') {
+    const isAdmin = user && user.role === 'admin';
+    const isTeacher = user && user.role === 'teacher';
+    const isStudent = user && user.role === 'student';
+    if (isAdmin) {
       this.props.getLessons();
       this.props.getUsers();
-    } else if (user && user.role === 'student') {
+    }
+    if (isStudent) {
       this.props.getStudentProfile(user._student);
     }
+    if (isTeacher) console.log('teacher');
   }
 
   handleSelect = selectedLessons => {
@@ -61,18 +66,22 @@ class Lessons extends Component {
     } = this.props;
 
     const isAdmin = user && user.role === 'admin';
+    const isTeacher = user && user.role === 'teacher';
     const filteredLessons = match(search, lessons, 'title');
 
     return (
       <div className={classes.root}>
-        <LessonsToolbar
-          lessons={filteredLessons}
-          search={search}
-          onChangeSearch={this.onChangeSearch}
-          selectedLessons={selectedLessons}
-          toggleDialog={toggleLessonDialog}
-          deleteLesson={() => deleteLesson(selectedLessons[0])}
-        />
+        {isAdmin ||
+          (isTeacher && (
+            <LessonsToolbar
+              lessons={filteredLessons}
+              search={search}
+              onChangeSearch={this.onChangeSearch}
+              selectedLessons={selectedLessons}
+              toggleDialog={toggleLessonDialog}
+              deleteLesson={() => deleteLesson(selectedLessons[0])}
+            />
+          ))}
         <div className={classes.content}>
           {!filteredLessons.length ? (
             <div className={classes.progressWrapper}>
@@ -80,6 +89,7 @@ class Lessons extends Component {
             </div>
           ) : (
             <LessonsTable
+              isAdmin={isAdmin}
               onSelect={selectLesson}
               onSelectAll={selectAllLessons}
               lessons={filteredLessons}

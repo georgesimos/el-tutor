@@ -57,7 +57,15 @@ class LessonsTable extends Component {
   };
 
   render() {
-    const { classes, className, lessons, selectedLessons, onSelect, onSelectAll } = this.props;
+    const {
+      classes,
+      className,
+      isAdmin,
+      lessons,
+      selectedLessons,
+      onSelect,
+      onSelectAll
+    } = this.props;
     const { rowsPerPage, page } = this.state;
     const rootClassName = classNames(classes.root, className);
     return (
@@ -67,14 +75,16 @@ class LessonsTable extends Component {
             <TableHead>
               <TableRow>
                 <TableCell align="left">
-                  <Checkbox
-                    checked={selectedLessons.length === lessons.length}
-                    color="primary"
-                    indeterminate={
-                      selectedLessons.length > 0 && selectedLessons.length < lessons.length
-                    }
-                    onChange={onSelectAll}
-                  />
+                  {isAdmin && (
+                    <Checkbox
+                      checked={selectedLessons.length === lessons.length}
+                      color="primary"
+                      indeterminate={
+                        selectedLessons.length > 0 && selectedLessons.length < lessons.length
+                      }
+                      onChange={onSelectAll}
+                    />
+                  )}
                   Title
                 </TableCell>
                 <TableCell align="left">Description</TableCell>
@@ -97,12 +107,14 @@ class LessonsTable extends Component {
                     >
                       <TableCell className={classes.tableCell}>
                         <div className={classes.tableCellInner}>
-                          <Checkbox
-                            checked={selectedLessons.indexOf(lesson._id) !== -1}
-                            color="primary"
-                            onChange={() => onSelect(lesson._id)}
-                            value="true"
-                          />
+                          {isAdmin && (
+                            <Checkbox
+                              checked={selectedLessons.indexOf(lesson._id) !== -1}
+                              color="primary"
+                              onChange={() => onSelect(lesson._id)}
+                              value="true"
+                            />
+                          )}
                           <Typography className={classes.nameText} variant="body1">
                             {lesson.title}
                           </Typography>
