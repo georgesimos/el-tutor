@@ -113,12 +113,13 @@ const createGrades = lessons => {
   return new Promise((resolve, reject) => {
     const grades = [];
     lessons.forEach(lesson => {
-      const { _students } = lesson;
+      const { _students, _teacher } = lesson;
       const newGrade = {
         _id: new mongoose.Types.ObjectId(),
         grade: Math.floor(Math.random() * 10) + 1,
         _lesson: lesson._id,
-        _student: _students[Math.floor(Math.random() * _students.length)]._id
+        _student: _students[Math.floor(Math.random() * _students.length)]._id,
+        _teacher
       };
       grades.push(newGrade);
     });
@@ -140,21 +141,38 @@ const saveAdmin = async () => {
   });
   await admin.save();
 };
-async function saveTeachers(teachers, lessons) {
+async function saveTeachers(teachers, lessons, grades) {
   console.log(chalk.green('Saving'), 'teachers');
-  const teachersClone = [...teachers];
+
+  const teachersClone = teachers.map(teacher => ({ ...teacher, _lesson: '', _grades: [] }));
+
   lessons.forEach(lesson => {
     if (lesson._teacher) {
       const index = teachers.findIndex(teacher => teacher._teacher === lesson._teacher);
-      teachersClone[index] = { ...teachers[index], lesson: lesson._id };
+      teachersClone[index] = { ...teachersClone[index], _lesson: lesson._id };
     }
   });
+  grades.forEach(grade => {
+    if (grade._teacher) {
+      const index = teachers.findIndex(teacher => teacher._teacher === grade._teacher);
+      teachersClone[index] = {
+        ...teachersClone[index],
+        _grades: [grade._id]
+      };
+    }
+  });
+
   teachersClone.forEach(async teacher => {
-    const { lesson, ...rest } = teacher;
+    const { _lesson, _grades, ...rest } = teacher;
     if (!teacher._teacher) return;
     try {
       const newUser = await new User({ ...rest });
-      const newTeacher = await new Teacher({ _id: teacher._teacher, _user: newUser._id, lesson });
+      const newTeacher = await new Teacher({
+        _id: teacher._teacher,
+        _user: newUser._id,
+        _lesson,
+        _grades
+      });
       await newUser.save();
       await newTeacher.save();
     } catch (error) {
@@ -164,13 +182,13 @@ async function saveTeachers(teachers, lessons) {
 }
 async function saveStudents(students, lessonsArr, gradesArr) {
   console.log(chalk.green('Saving'), 'student');
-  const studentsClone = students.map(student => ({ ...student, lessons: [], grades: [] }));
+  const studentsClone = students.map(student => ({ ...student, _lessons: [], _grades: [] }));
 
   lessonsArr.forEach(lesson => {
     if (lesson._students) {
       lesson._students.forEach(stu => {
         const index = students.findIndex(student => student._student === stu);
-        studentsClone[index].lessons.push(lesson._id);
+        studentsClone[index]._lessons.push(lesson._id);
       });
     }
   });
@@ -178,19 +196,19 @@ async function saveStudents(students, lessonsArr, gradesArr) {
   gradesArr.forEach(grade => {
     if (grade._student) {
       const studentIndex = students.findIndex(student => student._student === grade._student);
-      studentsClone[studentIndex].grades.push(grade._id);
+      studentsClone[studentIndex]._grades.push(grade._id);
     }
   });
   studentsClone.forEach(async student => {
-    const { lessons, grades, ...rest } = student;
+    const { _lessons, _grades, ...rest } = student;
     if (!student._student) return;
     try {
       const newUser = await new User({ ...rest });
       const newStudent = await new Student({
         _id: student._student,
         _user: newUser._id,
-        lessons,
-        grades
+        _lessons,
+        _grades
       });
       await newUser.save();
       await newStudent.save();
@@ -232,7 +250,7 @@ const seed = async () => {
   const grades = await createGrades(lessons, students);
 
   setTimeout(() => {
-    saveTeachers(teachers, lessons);
+    saveTeachers(teachers, lessons, grades);
     saveStudents(students, lessons, grades);
     saveLessons(lessons);
     saveGrades(grades);
