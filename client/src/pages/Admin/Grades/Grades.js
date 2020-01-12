@@ -59,17 +59,19 @@ class Grades extends Component {
     } = this.props;
 
     const isAdmin = user && user.role === 'admin';
+    const isTeacher = user && user.role === 'teacher';
 
     return (
       <div className={classes.root}>
-        {isAdmin && (
-          <GradesToolbar
-            grades={grades}
-            selectedGrades={selectedGrades}
-            toggleDialog={toggleGradeDialog}
-            deleteGrade={() => deleteGrade(selectedGrades[0])}
-          />
-        )}
+        {isAdmin ||
+          (isTeacher && (
+            <GradesToolbar
+              grades={grades}
+              selectedGrades={selectedGrades}
+              toggleDialog={toggleGradeDialog}
+              deleteGrade={() => deleteGrade(selectedGrades[0])}
+            />
+          ))}
         <div className={classes.content}>
           {!grades.length ? (
             <div className={classes.progressWrapper}>
@@ -77,6 +79,7 @@ class Grades extends Component {
             </div>
           ) : (
             <GradesTable
+              isAdmin={isAdmin}
               onSelect={selectGrade}
               onSelectAll={selectAllGrades}
               grades={grades}

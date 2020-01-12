@@ -69,7 +69,15 @@ class GradeTable extends Component {
   };
 
   render() {
-    const { classes, className, grades, selectedGrades, onSelect, onSelectAll } = this.props;
+    const {
+      classes,
+      className,
+      isAdmin,
+      grades,
+      selectedGrades,
+      onSelect,
+      onSelectAll
+    } = this.props;
     const { rowsPerPage, page } = this.state;
     const rootClassName = classNames(classes.root, className);
     return (
@@ -79,14 +87,16 @@ class GradeTable extends Component {
             <TableHead>
               <TableRow>
                 <TableCell align="left">
-                  <Checkbox
-                    checked={selectedGrades.length === grades.length}
-                    color="primary"
-                    indeterminate={
-                      selectedGrades.length > 0 && selectedGrades.length < grades.length
-                    }
-                    onChange={onSelectAll}
-                  />
+                  {isAdmin && (
+                    <Checkbox
+                      checked={selectedGrades.length === grades.length}
+                      color="primary"
+                      indeterminate={
+                        selectedGrades.length > 0 && selectedGrades.length < grades.length
+                      }
+                      onChange={onSelectAll}
+                    />
+                  )}
                   Grade
                 </TableCell>
                 <TableCell align="left">Lesson Title</TableCell>
@@ -110,12 +120,14 @@ class GradeTable extends Component {
                     >
                       <TableCell className={classes.tableCell}>
                         <div className={classes.tableCellInner}>
-                          <Checkbox
-                            checked={selectedGrades.indexOf(grade._id) !== -1}
-                            color="primary"
-                            onChange={() => onSelect(grade._id)}
-                            value="true"
-                          />
+                          {isAdmin && (
+                            <Checkbox
+                              checked={selectedGrades.indexOf(grade._id) !== -1}
+                              color="primary"
+                              onChange={() => onSelect(grade._id)}
+                              value="true"
+                            />
+                          )}
                           <Typography className={classes.nameText} variant="body1">
                             {grade.grade}
                           </Typography>
