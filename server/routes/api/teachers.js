@@ -1,9 +1,12 @@
 const router = require('express').Router();
 const auth = require('../../config/auth');
 const isAdmin = require('../../utils/isAdmin');
+const isTeacher = require('../../utils/isTeacher');
 const Teacher = require('../../models/Teacher');
 
-/* Get all teachers */
+// @route    Get api/teachers
+// @desc     Get all teachers
+// @access   Admin
 router.get('/', auth, isAdmin, async (req, res) => {
   try {
     const teachers = await Teacher.find({}).populate('_user', ['name', 'email']);
@@ -13,8 +16,10 @@ router.get('/', auth, isAdmin, async (req, res) => {
   }
 });
 
-/* Get teacher profile */
-router.get('/me', auth, async (req, res) => {
+// @route    Get api/teachers/me
+// @desc     Get teacher profile
+// @access   Teacher
+router.get('/me', auth, isTeacher, async (req, res) => {
   const { _teacher, role } = req.user;
   if (role !== 'teacher')
     res.status(401).send({ message: 'forbidden, this endpoint is only for teachers' });
