@@ -2,13 +2,14 @@ const router = require('express').Router();
 const auth = require('../../config/auth');
 const isAdmin = require('../../utils/isAdmin');
 const isTeacher = require('../../utils/isTeacher');
-const isStudent = require('../../utils/isStudent');
 const Grade = require('../../models/Grade');
 const Lesson = require('../../models/Lesson');
 const Teacher = require('../../models/Teacher');
 const Student = require('../../models/Student');
 
-/* Get all grades */
+// @route    Get api/grades
+// @desc     Get all grades
+// @access   Admin
 router.get('/', auth, isAdmin, async (req, res) => {
   try {
     const grades = await Grade.find({})
@@ -27,7 +28,9 @@ router.get('/', auth, isAdmin, async (req, res) => {
   }
 });
 
-/* Get grade by id */
+// @route    Get api/grades/:id
+// @desc     Get grades by id
+// @access   Admin
 router.get('/:id', auth, isAdmin, async (req, res) => {
   try {
     const { id } = req.params;
@@ -38,8 +41,10 @@ router.get('/:id', auth, isAdmin, async (req, res) => {
   }
 });
 
-/* Get grade by student id */
-router.get('/student/:id', auth, isStudent, async (req, res) => {
+// @route    Get api/grades/student/:id
+// @desc     Get grades by student
+// @access   Admin
+router.get('/student/:id', auth, isAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const grades = await Grade.find({ _student: id }).populate({
@@ -53,8 +58,10 @@ router.get('/student/:id', auth, isStudent, async (req, res) => {
   }
 });
 
-/* Get grade by teacher id */
-router.get('/teacher/:id', auth, isTeacher, async (req, res) => {
+// @route    Get api/grades/teacher/:id
+// @desc     Get grades by teacher
+// @access   Admin
+router.get('/teacher/:id', auth, isAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const grades = await Grade.find({ _teacher: id }).populate({
@@ -68,7 +75,9 @@ router.get('/teacher/:id', auth, isTeacher, async (req, res) => {
   }
 });
 
-/* Create a grade */
+// @route    Post api/grades
+// @desc     Create a grade
+// @access   Admin & Teacher
 router.post('/', auth, isTeacher, async (req, res) => {
   const { grade, _student, _lesson } = req.body;
   const lesson = await Lesson.findById(_lesson); // find the specific lesson
