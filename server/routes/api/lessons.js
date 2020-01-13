@@ -61,7 +61,7 @@ router.get('/', auth, isAdmin, async (req, res) => {
 });
 
 /* Get lesson by id */
-router.get('/:id', auth, isAdmin, async (req, res) => {
+router.get('/:id', auth, async (req, res) => {
   try {
     const { id } = req.params;
     const lessons = await Lesson.findById(id)
