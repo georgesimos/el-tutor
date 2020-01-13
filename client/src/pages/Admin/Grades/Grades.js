@@ -14,7 +14,8 @@ import {
   addGrade,
   updateGrade,
   getLessons,
-  getStudentProfile
+  getStudentProfile,
+  getTeacherProfile
 } from '../../../store/actions';
 import { ResponsiveDialog } from '../../../components';
 
@@ -25,13 +26,25 @@ class Grades extends Component {
   };
 
   componentDidMount() {
-    const { user } = this.props;
-    if (user && user.role === 'admin') {
-      this.props.getGrades();
-      this.props.getUsers();
-      this.props.getLessons();
-    } else if (user && user.role === 'student') {
-      this.props.getStudentProfile(user._student);
+    const {
+      user,
+      getUsers,
+      getLessons,
+      getGrades,
+      getStudentProfile,
+      getTeacherProfile
+    } = this.props;
+    const isAdmin = user && user.role === 'admin';
+    const isTeacher = user && user.role === 'teacher';
+    const isStudent = user && user.role === 'student';
+
+    if (isStudent) getStudentProfile();
+    if (isTeacher) getTeacherProfile();
+
+    if (isAdmin) {
+      getLessons();
+      getGrades();
+      getUsers();
     }
   }
 
@@ -87,7 +100,7 @@ class Grades extends Component {
             />
           )}
         </div>
-        {isAdmin && (
+        {!isStudent && (
           <ResponsiveDialog
             id="Add-grade"
             open={openDialog}
@@ -125,6 +138,7 @@ const mapDispatchToProps = {
   addGrade,
   updateGrade,
   deleteGrade,
-  getStudentProfile
+  getStudentProfile,
+  getTeacherProfile
 };
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Grades));
