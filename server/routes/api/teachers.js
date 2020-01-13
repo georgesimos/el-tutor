@@ -13,11 +13,23 @@ router.get('/', auth, isAdmin, async (req, res) => {
   }
 });
 
-/* Get teacher by id */
-router.get('/:id', auth, isAdmin, async (req, res) => {
+/* Get teacher profile */
+router.get('/me', auth, async (req, res) => {
+  const { _teacher, role } = req.user;
+  if (role !== 'teacher')
+    res.status(401).send({ error: 'forbidden, this endpoint is only for teachers' });
   try {
-    const { id } = req.params;
-    const teacher = await Teacher.findById(id);
+    const teacher = await await Teacher.findById(_teacher)
+      .populate('_user', ['name', 'email'])
+      .populate({
+        path: '_grades',
+        populate: { path: '_lesson', populate: { path: '_teacher', populate: '_user' } }
+      })
+      .populate({ path: '_grades', populate: { path: '_student', populate: '_user' } })
+      .populate({ path: '_lesson', populate: { path: '_teacher', populate: '_user' } })
+      .populate({ path: '_lesson', populate: { path: '_students', populate: '_user' } });
+    // .populate('_user', ['name', 'email']);
+
     return !teacher ? res.sendStatus(404) : res.send(teacher);
   } catch (e) {
     return res.sendStatus(400);
