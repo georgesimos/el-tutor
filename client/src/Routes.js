@@ -2,7 +2,7 @@ import React, { lazy, Suspense } from 'react';
 import { Router, Switch, Route } from 'react-router-dom';
 
 import Loading from './components/Loading';
-import { ProtectedRoute, WithLayoutRoute } from './routers';
+import { ProtectedRoute } from './routers';
 
 import { AdminLayout, PublicLayout } from './layouts';
 import { history } from './utils';

@@ -72,7 +72,6 @@ class Grades extends Component {
     } = this.props;
 
     const isAdmin = user && user.role === 'admin';
-    const isTeacher = user && user.role === 'teacher';
     const isStudent = user && user.role === 'student';
 
     return (
