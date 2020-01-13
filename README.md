@@ -65,9 +65,9 @@ $ npm start
 
 Postman is a collaboration platform for API development. Postman's features simplify each step of building an API and streamline collaboration so you can create better APIs—faster.
 
-#### Postman Documantation (must read)
+#### Postman Documentation (must read)
 
-\_el tutor API documantation : https://documenter.getpostman.com/view/2939944/SWLfaSM4
+\_el tutor API documentation : https://documenter.getpostman.com/view/2939944/SWLfaSM4
 
 ### Plugins
 
