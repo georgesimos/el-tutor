@@ -61,6 +61,14 @@ $ npm install
 $ npm start
 ```
 
+### Database seeding
+Database seeding is the initial seeding of a database with data.
+
+```sh
+$ node seed.js
+```
+> seed.js will auto generate some dummy users, lessons and grades. For Users creation faker npm package have been used!
+
 ### Postman
 
 Postman is a collaboration platform for API development. Postman's features simplify each step of building an API and streamline collaboration so you can create better APIs—faster.
