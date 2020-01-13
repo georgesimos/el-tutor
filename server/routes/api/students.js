@@ -20,7 +20,7 @@ router.get('/me', auth, isStudent, async (req, res) => {
   console.log(req.user);
   const { _student, role } = req.user;
   if (role !== 'student')
-    res.status(401).send({ error: 'forbidden, this endpoint is only for students' });
+    res.status(401).send({ message: 'forbidden, this endpoint is only for students' });
   try {
     const student = await await Student.findById(_student)
       .populate({

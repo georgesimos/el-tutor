@@ -17,7 +17,7 @@ router.get('/', auth, isAdmin, async (req, res) => {
 router.get('/me', auth, async (req, res) => {
   const { _teacher, role } = req.user;
   if (role !== 'teacher')
-    res.status(401).send({ error: 'forbidden, this endpoint is only for teachers' });
+    res.status(401).send({ message: 'forbidden, this endpoint is only for teachers' });
   try {
     const teacher = await await Teacher.findById(_teacher)
       .populate('_user', ['name', 'email'])

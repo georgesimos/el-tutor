@@ -12,7 +12,7 @@ const haveAdmin = async (req, res, next) => {
     if (!superadmin) return next();
     throw new Error();
   } catch (e) {
-    return res.status(403).send({ error: 'You can have only one admin.' });
+    return res.status(403).send({ message: 'You can have only one admin.' });
   }
 };
 

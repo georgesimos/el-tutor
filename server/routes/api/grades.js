@@ -75,7 +75,7 @@ router.post('/', auth, isTeacher, async (req, res) => {
 
   if (req.user.role !== 'admin') {
     if (JSON.stringify(lesson._teacher) !== JSON.stringify(req.user._teacher))
-      return res.status(401).send({ error: 'This lesson is not yours...' });
+      return res.status(401).send({ message: 'This lesson is not yours...' });
   }
   const teacher = await Teacher.findById(lesson._teacher);
   const student = await Student.findById(_student);

@@ -11,7 +11,7 @@ const auth = async (req, res, next) => {
     // Set token from Bearer token in header
     token = req.headers.authorization.replace('Bearer ', '');
   }
-  if (!token) return res.status(401).send({ error: 'Please authenticate.' });
+  if (!token) return res.status(401).send({ message: 'Please authenticate.' });
 
   try {
     // Verify token
@@ -25,7 +25,7 @@ const auth = async (req, res, next) => {
     req.user = user;
     return next();
   } catch (e) {
-    return res.status(401).send({ error: 'Please authenticate.' });
+    return res.status(401).send({ message: 'Please authenticate.' });
   }
 };
 
