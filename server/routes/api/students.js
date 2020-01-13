@@ -4,7 +4,9 @@ const isAdmin = require('../../utils/isAdmin');
 const isStudent = require('../../utils/isStudent');
 const Student = require('../../models/Student');
 
-/* Get all students */
+// @route    Get api/students
+// @desc     Get all students
+// @access   Admin
 router.get('/', auth, isAdmin, async (req, res) => {
   try {
     const students = await Student.find({}).populate('_user', ['name', 'email']);
@@ -14,7 +16,9 @@ router.get('/', auth, isAdmin, async (req, res) => {
   }
 });
 
-/* Get student profile */
+// @route    Get api/students/me
+// @desc     Get student profile
+// @access   Student
 router.get('/me', auth, isStudent, async (req, res) => {
   console.log(req);
   console.log(req.user);
@@ -23,25 +27,6 @@ router.get('/me', auth, isStudent, async (req, res) => {
     res.status(401).send({ message: 'forbidden, this endpoint is only for students' });
   try {
     const student = await await Student.findById(_student)
-      .populate({
-        path: '_grades',
-        populate: { path: '_lesson', populate: { path: '_teacher', populate: '_user' } }
-      })
-      .populate({ path: '_grades', populate: { path: '_student', populate: '_user' } })
-      .populate({ path: '_lessons', populate: { path: '_teacher', populate: '_user' } })
-      .populate('_user', ['name', 'email']);
-
-    return !student ? res.sendStatus(404) : res.send(student);
-  } catch (e) {
-    return res.sendStatus(400);
-  }
-});
-
-/* Get student by id */
-router.get('/:id', auth, isStudent, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const student = await await Student.findById(id)
       .populate({
         path: '_grades',
         populate: { path: '_lesson', populate: { path: '_teacher', populate: '_user' } }
