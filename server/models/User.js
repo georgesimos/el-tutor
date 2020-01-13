@@ -6,9 +6,23 @@ const { Schema } = mongoose;
 
 const userSchema = Schema(
   {
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    name: { type: String, required: true },
+    email: {
+      type: String,
+      unique: true,
+      validate: {
+        validator: function(v) {
+          return /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/.test(v);
+        },
+        message: props => `${props.value} is not a valid email!`
+      },
+      required: [true, 'email is required']
+    },
+    password: {
+      type: String,
+      minlength: [6, 'Too few letters'],
+      required: [true, 'password id is required']
+    },
+    name: { type: String, required: [true, 'name id is required'] },
     role: {
       type: String,
       default: 'student',
