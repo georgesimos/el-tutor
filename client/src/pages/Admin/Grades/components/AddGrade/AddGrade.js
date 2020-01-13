@@ -16,20 +16,49 @@ class AddGrade extends Component {
   state = {
     grade: '',
     _lesson: '',
-    _student: ''
+    _student: '',
+    students: []
   };
+
+  componentDidUpdate(prevProps, prevState) {
+    const { _lesson } = this.state;
+    if (prevState._lesson !== _lesson) {
+      this.fetchLessonStudents(_lesson);
+    }
+  }
 
   componentDidMount() {
     if (this.props.selectedGrade) {
       const { grade, _lesson, _student } = this.props.selectedGrade;
       this.setState({
         grade,
-
         _lesson: _lesson._id,
         _student: _student._id
       });
     }
   }
+
+  fetchLessonStudents = async id => {
+    try {
+      const token = localStorage.getItem('jwtToken');
+      const url = '/api/lessons/' + id;
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const lesson = await response.json();
+      if (response.ok) {
+        const students = lesson._students
+          .filter(student => student._lessons.includes(id))
+          .map(({ _user, _id }) => ({ ..._user, _student: _id }));
+        this.setState({ students });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   handleChange = e => {
     this.setState({
@@ -54,8 +83,8 @@ class AddGrade extends Component {
   };
 
   render() {
-    const { classes, className, selectedGrade, lessons, students } = this.props;
-    const { grade, _lesson, _student } = this.state;
+    const { classes, className, selectedGrade, lessons } = this.props;
+    const { grade, _lesson, _student, students } = this.state;
     const rootClassName = classNames(classes.root, className);
     const mainTitle = selectedGrade ? 'Edit Grade' : 'Add Grade';
     const submitButton = selectedGrade ? 'Update Grade' : 'Add Grade';
@@ -65,9 +94,7 @@ class AddGrade extends Component {
       ? lessons.map(({ title, _id }) => ({ text: title, value: _id }))
       : [];
     const studentsOptions = students.length
-      ? students
-          .filter(s => s._student)
-          .map(({ email, _student }) => ({ text: email, value: _student }))
+      ? students.map(({ _id, email, _student }) => ({ text: email, value: _student, key: _id }))
       : [];
 
     return (
@@ -115,8 +142,8 @@ class AddGrade extends Component {
                 value={_student}
                 onChange={event => this.handleFieldChange('_student', event.target.value)}
               >
-                {studentsOptions.map(({ text, value }) => (
-                  <MenuItem key={`student-${value}`} value={value}>
+                {studentsOptions.map(({ text, value, key }) => (
+                  <MenuItem key={`student-${value}-${key}`} value={value}>
                     {text}
                   </MenuItem>
                 ))}
