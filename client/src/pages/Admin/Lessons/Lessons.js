@@ -6,6 +6,7 @@ import styles from './styles';
 import { LessonsToolbar, LessonsTable, AddLesson } from './components';
 import {
   getStudentProfile,
+  getTeacherProfile,
   getUsers,
   getLessons,
   deleteLesson,
@@ -27,18 +28,17 @@ class Lessons extends Component {
   };
 
   componentDidMount() {
-    const { user } = this.props;
+    const { user, getUsers, getLessons, getStudentProfile, getTeacherProfile } = this.props;
     const isAdmin = user && user.role === 'admin';
     const isTeacher = user && user.role === 'teacher';
     const isStudent = user && user.role === 'student';
+
+    if (isStudent) getStudentProfile();
+    if (isTeacher) getTeacherProfile();
     if (isAdmin) {
-      this.props.getLessons();
-      this.props.getUsers();
+      getLessons();
+      getUsers();
     }
-    if (isStudent) {
-      this.props.getStudentProfile(user._student);
-    }
-    if (isTeacher) console.log('teacher');
   }
 
   handleSelect = selectedLessons => {
@@ -66,13 +66,12 @@ class Lessons extends Component {
     } = this.props;
 
     const isAdmin = user && user.role === 'admin';
-    const isTeacher = user && user.role === 'teacher';
-    const isStudent = user & (user.role === 'student');
+
     const filteredLessons = match(search, lessons, 'title');
 
     return (
       <div className={classes.root}>
-        {!isStudent && (
+        {isAdmin && (
           <LessonsToolbar
             lessons={filteredLessons}
             search={search}
@@ -125,6 +124,7 @@ const mapStateToProps = ({ authState, userState, lessonState }) => ({
 });
 const mapDispatchToProps = {
   getStudentProfile,
+  getTeacherProfile,
   getUsers,
   getLessons,
   selectLesson,
