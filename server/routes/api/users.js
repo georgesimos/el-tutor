@@ -6,7 +6,9 @@ const auth = require('../../config/auth');
 const haveAdmin = require('../../utils/haveAdmin');
 const isAdmin = require('../../utils/isAdmin');
 
-/* Create a user */
+// @route    Post api/users
+// @desc     Post a user
+// @access   Public
 router.post('/', haveAdmin, async (req, res) => {
   let student;
   let teacher;
@@ -33,7 +35,9 @@ router.post('/', haveAdmin, async (req, res) => {
   }
 });
 
-/* Get all users */
+// @route    Get api/users
+// @desc     Get all users
+// @access   Admin
 router.get('/', auth, isAdmin, async (req, res) => {
   try {
     const users = await User.find({});
@@ -43,7 +47,9 @@ router.get('/', auth, isAdmin, async (req, res) => {
   }
 });
 
-/* Get logged in user details */
+// @route    Get api/users/me
+// @desc     Get a user profile
+// @access   Private
 router.get('/me', auth, async (req, res) => {
   try {
     res.send(req.user);
@@ -52,7 +58,9 @@ router.get('/me', auth, async (req, res) => {
   }
 });
 
-/* Get user by id */
+// @route    Get api/users/:id
+// @desc     Get a user by id
+// @access   Admin
 router.get('/:id', auth, isAdmin, async (req, res) => {
   try {
     const { id } = req.params;
@@ -63,7 +71,9 @@ router.get('/:id', auth, isAdmin, async (req, res) => {
   }
 });
 
-/* Update logged in user */
+// @route    Pach api/users/me
+// @desc     Pach a logged in user
+// @access   Everyone
 router.patch('/me', auth, async (req, res) => {
   const validationErrors = [];
   const updates = Object.keys(req.body);
@@ -90,7 +100,9 @@ router.patch('/me', auth, async (req, res) => {
   }
 });
 
-/* Update user by id */
+// @route    Pach api/users/:id
+// @desc     Pach a user by id
+// @access   Admin
 router.patch('/:id', auth, isAdmin, async (req, res) => {
   const validationErrors = [];
   const updates = Object.keys(req.body);
@@ -119,7 +131,9 @@ router.patch('/:id', auth, isAdmin, async (req, res) => {
   }
 });
 
-/* Delete logged in user */
+// @route    Delete api/users/me
+// @desc     Delete logged in user
+// @access   private
 router.delete('/me', auth, async (req, res) => {
   try {
     await req.user.remove();
@@ -129,7 +143,9 @@ router.delete('/me', auth, async (req, res) => {
   }
 });
 
-/* Delete user by id */
+// @route    Delete api/users/:id
+// @desc     Delete  user by id
+// @access   private
 router.delete('/:id', auth, isAdmin, async (req, res) => {
   const _id = req.params.id;
   try {
