@@ -5,7 +5,9 @@ const Lesson = require('../../models/Lesson');
 const Teacher = require('../../models/Teacher');
 const Student = require('../../models/Student');
 
-/* Create a Lesson */
+// @route    Post api/lessons
+// @desc     Create a lesson
+// @access   Admin
 router.post('/', auth, isAdmin, async (req, res) => {
   if (req.user.role !== 'admin')
     return res.status(401).send({
@@ -47,7 +49,9 @@ router.post('/', auth, isAdmin, async (req, res) => {
   }
 });
 
-/* Get all lessons */
+// @route    Get api/lessons
+// @desc     Get all lessons
+// @access   Admin
 router.get('/', auth, isAdmin, async (req, res) => {
   try {
     const lessons = await Lesson.find({})
@@ -60,7 +64,9 @@ router.get('/', auth, isAdmin, async (req, res) => {
   }
 });
 
-/* Get lesson by id */
+// @route    Get api/lessons/:id
+// @desc     Get a lesson by id
+// @access   All
 router.get('/:id', auth, async (req, res) => {
   try {
     const { id } = req.params;
@@ -74,7 +80,9 @@ router.get('/:id', auth, async (req, res) => {
   }
 });
 
-/* Update lesson by id */
+// @route    Patch api/lessons/:id
+// @desc     Update a lesson by id
+// @access   Admin
 router.patch('/:id', auth, isAdmin, async (req, res) => {
   const validationErrors = [];
   const updates = Object.keys(req.body);
@@ -102,7 +110,9 @@ router.patch('/:id', auth, isAdmin, async (req, res) => {
   }
 });
 
-/* Delete lesson by id */
+// @route    Delete api/lessons/:id
+// @desc     Delete a lesson by id
+// @access   Admin
 router.delete('/:id', auth, isAdmin, async (req, res) => {
   const _id = req.params.id;
   try {
