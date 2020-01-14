@@ -12,7 +12,7 @@ const useStyles = makeStyles(styles);
 function LoginForm(props) {
   const { isAuthenticated, user, redirect } = props;
   const classes = useStyles();
-  const [values, setValues] = useState({ email: 'admin@admin.com', password: 'password123' });
+  const [values, setValues] = useState({ email: 'admin@admin.com', password: 'MySecretPass123' });
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -51,7 +51,7 @@ function LoginForm(props) {
           type="password"
           value={values.password}
           variant="outlined"
-          placeholder="password123"
+          placeholder="MySecretPass123"
         />
       </div>
 
