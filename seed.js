@@ -51,7 +51,7 @@ const createUsers = role => {
         _id: new mongoose.Types.ObjectId(),
         name: `${firstName} ${lastName}`,
         email,
-        password: 'password123',
+        password: 'MySecretPass123',
         role,
         ...roleProps
       };
@@ -136,7 +136,7 @@ const saveAdmin = async () => {
   const admin = await new User({
     name: 'super admin',
     email: 'admin@admin.com',
-    password: 'password123',
+    password: 'MySecretPass123',
     role: 'admin'
   });
   await admin.save();
