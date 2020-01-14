@@ -4,8 +4,8 @@ const { Schema } = mongoose;
 
 const lessonSchema = Schema(
   {
-    title: { type: String, required: [true, 'Add a title'] },
-    description: { type: String, required: [true, 'Add a description'] },
+    title: { type: String, trim: true, required: [true, 'Add a title'] },
+    description: { type: String, trim: true, required: [true, 'Add a description'] },
     _teacher: {
       type: Schema.Types.ObjectId,
       ref: 'Teacher',
