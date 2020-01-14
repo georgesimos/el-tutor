@@ -8,6 +8,8 @@ const userSchema = Schema(
   {
     email: {
       type: String,
+      trim: true,
+      lowercase: true,
       unique: true,
       validate: {
         validator: function(v) {
@@ -19,10 +21,16 @@ const userSchema = Schema(
     },
     password: {
       type: String,
-      minlength: [6, 'Too few letters'],
+      trim: true,
+      minlength: [7, 'Too few letters'],
+      validate(value) {
+        if (value.toLowerCase().includes('password')) {
+          throw new Error('Password should not contain word: password');
+        }
+      },
       required: [true, 'password id is required']
     },
-    name: { type: String, required: [true, 'name id is required'] },
+    name: { type: String, trim: true, required: [true, 'name id is required'] },
     role: {
       type: String,
       default: 'student',
