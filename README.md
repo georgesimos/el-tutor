@@ -1,5 +1,5 @@
 <h1 align="center">
-_el tutor
+el tutor
 </h1>
 <p align="center">
 MongoDB, Expressjs, React/Redux, Nodejs
@@ -7,7 +7,7 @@ MongoDB, Expressjs, React/Redux, Nodejs
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/facebook/react/blob/master/LICENSE) [![npm version](https://img.shields.io/npm/v/react.svg?style=flat)](https://www.npmjs.com/package/react)
 
-\_el tutor is an online web app that allows teachers and students to keep track of student's grades. Built with MERN Stack
+el tutor is an online web app that allows teachers and students to keep track of student's grades. Built with MERN Stack
 
 - Admin Dashboard
 - Dark Theme UI
@@ -79,7 +79,7 @@ Postman is a collaboration platform for API development. Postman's features simp
 
 #### Postman Documentation (must read)
 
-\_el tutor API documentation : https://documenter.getpostman.com/view/2939944/SWLfaSM4
+el tutor API documentation : https://documenter.getpostman.com/view/2939944/SWLfaSM4
 
 ### Plugins
 
