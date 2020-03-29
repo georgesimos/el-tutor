@@ -109,24 +109,29 @@ el tutor API documentation : https://documenter.getpostman.com/view/2939944/SWLf
 
 Login Page
 <img src="https://github.com/georgesimos/readme-assets/blob/master/el-tutor/login.png" />
+<details>
+  <summary>More Screenshots</summary>
+  
+  Register Page
+  <img src="https://github.com/georgesimos/readme-assets/blob/master/el-tutor/register.png" />
 
-Register Page
-<img src="https://github.com/georgesimos/readme-assets/blob/master/el-tutor/register.png" />
+  Account Page
+  <img src="https://github.com/georgesimos/readme-assets/blob/master/el-tutor/account.png" />
 
-Account Page
-<img src="https://github.com/georgesimos/readme-assets/blob/master/el-tutor/account.png" />
+  Lessons Page
+  <img src="https://github.com/georgesimos/readme-assets/blob/master/el-tutor/lessons.png" />
 
-Lessons Page
-<img src="https://github.com/georgesimos/readme-assets/blob/master/el-tutor/lessons.png" />
+  Add Lesson
+  <img src="https://github.com/georgesimos/readme-assets/blob/master/el-tutor/add-lesson.png" />
 
-Add Lesson
-<img src="https://github.com/georgesimos/readme-assets/blob/master/el-tutor/add-lesson.png" />
+  Grades Page
+  <img src="https://github.com/georgesimos/readme-assets/blob/master/el-tutor/grades.png" />
 
-Grades Page
-<img src="https://github.com/georgesimos/readme-assets/blob/master/el-tutor/grades.png" />
+  Users Page
+  <img src="https://github.com/georgesimos/readme-assets/blob/master/el-tutor/users.png" />
 
-Users Page
-<img src="https://github.com/georgesimos/readme-assets/blob/master/el-tutor/users.png" />
+ </details>
+
 
 ## License
 
